@@ -67,19 +67,19 @@ public class GetAttr {
 	     
 	    return result;		
 	}
-	public static HashMap<Integer, String> feature_categories(int att_index, ArrayList<ArrayList<String>> records, int t, int f) {
+	public static HashMap<Integer, String> feature_categories(int att_index, ArrayList<ArrayList<String>> records, int rise, int down) {
 		 HashMap<Integer, String> result = new HashMap<>(); 	    
 	     int col = att_index; 
 	     for (int i = 1; i < records.size(); i++ ) {       
 	            if (i == 1) {
-	                result.put(i, "t" );     
+	                result.put(i, Integer.toString(rise));     
 	                continue;
 	            }
 	            
 	            if (Double.parseDouble(records.get(i).get(col))- Double.parseDouble(records.get(i-1).get(col)) > 0 ) {
-	    	    	result.put(i, "t");     
+	    	    	result.put(i, Integer.toString(rise));     
 	    	    } else {
-	    	    	result.put(i, "f");  
+	    	    	result.put(i, Integer.toString(down));  
 	    	    }	
         }       	        	
 	    return result;		
@@ -147,13 +147,13 @@ public class GetAttr {
 	}
 	
 	
-	public static HashMap<Integer, String> match_source_target_categories(HashMap<Integer, String> s, HashMap<Integer, String> t, int tr, int fr) {
+	public static HashMap<Integer, String> match_source_target_categories(HashMap<Integer, String> s, HashMap<Integer, String> t, int rise, int down) {
 		HashMap<Integer, String> result = new HashMap<>(); 
 	    for (int i = 1;i <= t.size(); i++) {
 	        if (s.get(i) == t.get(i)) {
-	        	result.put(i, "tr");
+	        	result.put(i, Integer.toString(rise));
 	        } else {
-	        	result.put(i, "fr");
+	        	result.put(i, Integer.toString(down));
 	        }
 	    }	    
 	    return result;
