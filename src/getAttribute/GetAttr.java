@@ -331,6 +331,48 @@ public class GetAttr {
     	return result;
     }
     
+    public static HashMap<Integer, String> BIAS_categories(int length, int att_index, double threshold, ArrayList<ArrayList<String>> records, int rise, int down) {
+    	HashMap<Integer, String> result = new HashMap<>();
+    	int col = att_index;   
+    	int rise_number = 0;
+    	int down_number = 0;
+    	for (int i = 1; i < records.size(); i++) {
+    		double bias;
+    	    if (i <= length-1) {
+    	    	//result.put(i, "BIAS_" + records.get(0).get(att_index).charAt(0) + "_" + length + "_" + threshold + "_1");
+    	    } else {
+    	    	double sum_t = 0;
+    	    	if (i - length + 1 >= 1) {
+    	    		for (int j = i; j >= i-length+1; j--) {                
+                        sum_t = sum_t + Double.parseDouble(records.get(j).get(col));
+                    } 	    	    		
+    	    	}
+    	    	sum_t = sum_t / (double)length;
+    	    	bias = (Double.parseDouble(records.get(i).get(att_index)) - sum_t)/(double) sum_t;
+    	    	if (bias >= threshold) {
+    	    		result.put(i, Integer.toString(i));	
+    	    		 rise_number++;
+    	    	} else {
+    	    		result.put(i, "BIAS_" + records.get(0).get(att_index).charAt(0) + "_" + length + "_" + threshold + "_0");	
+    	    		down_number++;
+    	    	}    	    	
+    	    }
+    		
+    	}
+    	for (int i = 1; i < records.size(); i++) {
+    		if (result.get(i) == null) {
+    			if (rise_number > down_number) {
+    				result.put(i, Integer.toString(rise));
+    			} else {
+    				result.put(i, Integer.toString(down));
+    			}
+    		}
+    	}
+    	
+    	
+    	return result;
+    }
+    
     public static HashMap<Integer, Double> BIAS_weka(int length, int att_index, double threshold, ArrayList<ArrayList<String>> records) {
     	HashMap<Integer, Double> result = new HashMap<>();
     	int col = att_index;   
@@ -610,10 +652,10 @@ public static void featureExtraction2(String output_filename, ArrayList<ArrayLis
 		HashMap<Integer, String> FT_but_categories = feature_categories(4, records,0,1);
 		
 		HashMap<Integer, Double> FT_but_value = feature2_weka(4, records);
-	
+	    
 		HashMap<Integer, Double> MA_T_2 = Move_Average_weka(2, records.get(0).get(4), 4, records);
 		
-		//2, 3
+		//2,3
 		HashMap<Integer, String> Match_of_oil_rate_categories = match_source_target_categories(FS_oil, FS_rate,2,3);
 		//4,5
 		HashMap<Integer, String> Match_of_rate_but_categories = match_source_target_categories(FS_rate, FT_but,4,5);
@@ -622,6 +664,43 @@ public static void featureExtraction2(String output_filename, ArrayList<ArrayLis
 		//8,9
 		HashMap<Integer, String> Match_of_rubber_but_categories = match_source_target_categories(FS_rubber, FT_but, 8,9);
 		
+		//10,11
+		HashMap<Integer, String> FS_oil_categories = feature_categories(1, records,10,11);
+		//12,13
+		HashMap<Integer, String> FS_rubber_categories = feature_categories(2, records,12,13);
+		//14,15
+		HashMap<Integer, String> FS_rate_categories = feature_categories(3, records,14,15);
+		
+		//16,17
+		HashMap<Integer, String> BIAS_T_2_0001 = BIAS_categories(2, 4, 0.0001, records, 16,17);
+		//18,19				
+		HashMap<Integer, String> BIAS_T_2_001 = BIAS_categories(2, 4, 0.001, records, 18,19);
+		//20,21				
+	    HashMap<Integer, String> BIAS_T_2_01 = BIAS_categories(2, 4, 0.01, records, 20,21);		
+	    
+	    //22,23
+	  	HashMap<Integer, String> BIAS_T_3_0001 = BIAS_categories(3, 4, 0.0001, records, 22,23);
+	  	//24,25				
+	  	HashMap<Integer, String> BIAS_T_3_001 = BIAS_categories(3, 4, 0.001, records, 24,25);
+	  	//26,27			
+	  	HashMap<Integer, String> BIAS_T_3_01 = BIAS_categories(3, 4, 0.01, records, 26,27);		
+	    
+	    //28,29
+	  	HashMap<Integer, String> BIAS_T_4_0001 = BIAS_categories(4, 4, 0.0001, records, 28,29);
+	  	//30,31		
+	  	HashMap<Integer, String> BIAS_T_4_001 = BIAS_categories(4, 4, 0.001, records, 30,31);
+	  	//32,33			
+	  	HashMap<Integer, String> BIAS_T_4_01 = BIAS_categories(4, 4, 0.01, records, 32,33);		
+	    
+	    //34,35
+	  	HashMap<Integer, String> BIAS_T_5_0001 = BIAS_categories(5, 4, 0.0001, records, 34,35);
+	  	//36,37			
+	  	HashMap<Integer, String> BIAS_T_5_001 = BIAS_categories(5, 4, 0.001, records, 36,37);
+	  	//38,39			
+	  	HashMap<Integer, String> BIAS_T_5_01 = BIAS_categories(5, 4, 0.01, records, 38,39);		
+	    
+	  	
+	    
 		for (int i = 0; i < records.size(); i++) {		
 			ArrayList<String> temp = new ArrayList<>();
 			//Add time
@@ -648,6 +727,48 @@ public static void featureExtraction2(String output_filename, ArrayList<ArrayLis
 					    	break; 
 					    case "FT_but_categories":
 					    	temp.add(FT_but_categories.get(i));
+					    	break; 
+					    case "FS_oil_categories":
+					    	temp.add(FS_oil_categories.get(i));
+					    	break; 
+					    case "FS_rubber_categories":
+					    	temp.add(FS_rubber_categories.get(i));
+					    	break; 
+					    case "BIAS_T_2_0001":
+					    	temp.add(BIAS_T_2_0001.get(i));
+					    	break; 
+					    case "BIAS_T_2_001":
+					    	temp.add(BIAS_T_2_001.get(i));
+					    	break; 
+					    case "BIAS_T_2_01":
+					    	temp.add(BIAS_T_2_01.get(i));
+					    	break; 
+					    case "BIAS_T_3_0001":
+					    	temp.add(BIAS_T_3_0001.get(i));
+					    	break; 
+					    case "BIAS_T_3_001":
+					    	temp.add(BIAS_T_3_001.get(i));
+					    	break; 
+					    case "BIAS_T_3_01":
+					    	temp.add(BIAS_T_3_01.get(i));
+					    	break;
+					    case "BIAS_T_4_0001":
+					    	temp.add(BIAS_T_4_0001.get(i));
+					    	break; 
+					    case "BIAS_T_4_001":
+					    	temp.add(BIAS_T_2_001.get(i));
+					    	break; 
+					    case "BIAS_T_4_01":
+					    	temp.add(BIAS_T_4_01.get(i));
+					    	break; 
+					    case "BIAS_T_5_0001":
+					    	temp.add(BIAS_T_5_0001.get(i));
+					    	break; 
+					    case "BIAS_T_5_001":
+					    	temp.add(BIAS_T_5_001.get(i));
+					    	break; 
+					    case "BIAS_T_5_01":
+					    	temp.add(BIAS_T_5_01.get(i));
 					    	break; 
 						default:
 							break;						
