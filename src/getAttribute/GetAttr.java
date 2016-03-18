@@ -728,6 +728,9 @@ public static void featureExtraction2(String output_filename, ArrayList<ArrayLis
 					    case "FT_but_categories":
 					    	temp.add(FT_but_categories.get(i));
 					    	break; 
+					    case "FS_rate_categories":
+					    	temp.add(FS_rate_categories.get(i));
+					    	break; 
 					    case "FS_oil_categories":
 					    	temp.add(FS_oil_categories.get(i));
 					    	break; 

@@ -99,7 +99,7 @@ public class wekaTest {
     		        predictions.appendElements(validation.predictions());
     		        		     
     		        double percentage  = validation.correct()/(double)(validation.incorrect() + validation.correct());
-		            if (percentage < 0.75) continue;
+		            if (percentage < 0.8) continue;
     		        
                 	File fout = new File("C:\\user\\workspace\\wekaproject\\data\\" + "svm_liner_" + para_list+".arff");                	
              	    FileOutputStream fos = new FileOutputStream(fout);
@@ -129,7 +129,7 @@ public class wekaTest {
             	    FastVector predictions = new FastVector();
     		        predictions.appendElements(validation.predictions());
     		        double percentage  = validation.correct()/(double)(validation.incorrect() + validation.correct());
-		            if (percentage < 0.75) continue;
+		            if (percentage < 0.8) continue;
             		
                 	File fout = new File("C:\\user\\workspace\\wekaproject\\data\\" + "svm_poly_" + para_list+".arff");                	
              	    FileOutputStream fos = new FileOutputStream(fout);
@@ -138,7 +138,7 @@ public class wekaTest {
     		    
     		    
     		        
-    		        osw.write(validation.toSummaryString("\nResults:SVM(LINEAR)\n======\n", true)); 
+    		        osw.write(validation.toSummaryString("\nResults:SVM(PLOY)\n======\n", true)); 
     		        osw.write("\r\n");
     		        osw.write(validation.toClassDetailsString());
     		        //System.out.println(validation.toSummaryString("\nResults:SVM(PLOY)\n======\n", true));
@@ -156,7 +156,7 @@ public class wekaTest {
 		            Evaluation validation = classify(models[j], train, test); 
 		            predictions.appendElements(validation.predictions());
 		            double percentage  = validation.correct()/(double)(validation.incorrect() + validation.correct());
-		            if (percentage < 0.75) continue;
+		            if (percentage < 0.8) continue;
 		            
                     File fout = new File("C:\\user\\workspace\\wekaproject\\data\\" + models[j].getClass().getSimpleName() + "_" + para_list+".arff");                	
              	    FileOutputStream fos = new FileOutputStream(fout);
@@ -174,7 +174,7 @@ public class wekaTest {
 			//System.out.println("Accuracy of " + models[j].getClass().getSimpleName() + ": "
 			//		+ String.format("%.2f%%", accuracy)
 			//		+ "\n---------------------------------");
-		            osw.write(validation.toSummaryString("\nResults:SVM(LINEAR)\n======\n", true)); 
+		            osw.write(validation.toSummaryString("\nResults:"+models[j].getClass().getSimpleName() + "\n======\n", true)); 
     		        osw.write("\r\n");
     		        osw.write(validation.toClassDetailsString());
 		            //System.out.println(validation.toSummaryString("\nResults:"+models[j].getClass().getSimpleName() + "\n======\n", true));
@@ -265,17 +265,9 @@ public class wekaTest {
 		parameter.add("FS_rubber_categories");
 		parameter.add("FS_rate_categories");
 		parameter.add("BIAS_T_2_0001");
-		parameter.add("BIAS_T_2_001");
-		parameter.add("BIAS_T_2_01");
 		parameter.add("BIAS_T_3_0001");
-		parameter.add("BIAS_T_3_001");
-		parameter.add("BIAS_T_3_01");
-		parameter.add("BIAS_T_4_0001");
-		parameter.add("BIAS_T_4_001");
-		parameter.add("BIAS_T_4_01");
-		parameter.add("BIAS_T_5_0001");
-		parameter.add("BIAS_T_5_001");
-		parameter.add("BIAS_T_5_01");
+		//parameter.add("BIAS_T_4_0001");
+		//parameter.add("BIAS_T_5_0001");
 		buildPowerSet(parameter,parameter.size());
 		
 		for (List<String> para_list : powerSet) {
