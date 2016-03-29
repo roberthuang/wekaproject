@@ -61,7 +61,7 @@ public class wekaTest {
  
 	public static void run(List<String> para_list) throws Exception {
 
-		BufferedReader datafile = readDataFile("weka_training_" + para_list +"_.arff");
+		BufferedReader datafile = readDataFile("preprocessing\\weka_training_" + para_list +"_.arff");
  
 		Instances data = new Instances(datafile);
 		//System.out.println(data.numAttributes() - 1);
@@ -141,8 +141,6 @@ public class wekaTest {
     		        osw.write(validation.toSummaryString("\nResults:SVM(PLOY)\n======\n", true)); 
     		        osw.write("\r\n");
     		        osw.write(validation.toClassDetailsString());
-    		        //System.out.println(validation.toSummaryString("\nResults:SVM(PLOY)\n======\n", true));
-    		        //System.out.println(validation.toClassDetailsString());
     		        osw.close();
             	}catch (IOException e) {
     	        	System.out.println("[ERROR] I/O Exception.");
@@ -279,19 +277,19 @@ public class wekaTest {
     	    
     	    /**Feature Extraction**/    	
     	    HashMap<Integer, String> feature_target = GetAttr.featureExtraction_target(records);
-    	    GetAttr.featureExtraction_weka("weka_" + para_list + "_.csv" , records, feature_target, para_list);  
+    	    GetAttr.featureExtraction_weka("C:\\user\\workspace\\wekaproject\\preprocessing\\weka_" + para_list + "_.csv" , records, feature_target, para_list);  
     	    //System.out.println(para_list);
     	    /**Translate To SDB**/
     	    /**1.Training Data**/
     	    
     	    T2SDB t2sdb = new T2SDB();       	  
     	    //t2sdb.translate_training_sliding_window_weka(10, "petro_subset1_2010_rate.csv", feature_target, "weka_training.txt");
-    	    t2sdb.translate_training_sliding_window_weka(10, "weka_" + para_list + "_.csv", feature_target, "weka_training_" + para_list +"_.txt");
+    	    t2sdb.translate_training_sliding_window_weka(10, "C:\\user\\workspace\\wekaproject\\preprocessing\\weka_" + para_list + "_.csv", feature_target, "C:\\user\\workspace\\wekaproject\\preprocessing\\weka_training_" + para_list +"_.txt");
     	    
     	    try {
-                ArrayList<ArrayList<String>> txt_training = read_text_weka("weka_training_" + para_list +"_.txt");  
+                ArrayList<ArrayList<String>> txt_training = read_text_weka("C:\\user\\workspace\\wekaproject\\preprocessing\\weka_training_" + para_list +"_.txt");  
                 try {
-    		        writeCSV("", "weka_training_" + para_list +"_.csv", txt_training);
+    		        writeCSV("", "C:\\user\\workspace\\wekaproject\\preprocessing\\weka_training_" + para_list +"_.csv", txt_training);
     		    } catch (IOException e) {
    			        System.out.println("[ERROR] I/O Exception.");
     			    e.printStackTrace();
@@ -303,12 +301,12 @@ public class wekaTest {
     	    
     	    // load CSV
     	    CSVLoader loader = new CSVLoader();
-    	    loader.setSource(new File("weka_training_" + para_list +"_.csv"));
+    	    loader.setSource(new File("C:\\user\\workspace\\wekaproject\\preprocessing\\weka_training_" + para_list +"_.csv"));
     	    Instances data1 = loader.getDataSet();
     	    // save ARFF
     	    ArffSaver saver = new ArffSaver();
     	    saver.setInstances(data1);
-    	    saver.setFile(new File("weka_training_" + para_list +"_.arff"));
+    	    saver.setFile(new File("C:\\user\\workspace\\wekaproject\\preprocessing\\weka_training_" + para_list +"_.arff"));
     	    //saver.setDestination(new File(args[1]));
     	    saver.writeBatch();
     	    
