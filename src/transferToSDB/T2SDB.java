@@ -1,9 +1,10 @@
 package transferToSDB;
+
 import java.io.*;
 import java.util.*;
-
+import java.util.Arrays;
 public class T2SDB {
-	public int translate_training_sliding_window(int next_week, String path, HashMap<Integer, String> class_table, String output) {
+	public int translate_sliding_window(int next_week, String path, HashMap<Integer, String> class_table, String output) {
 	       int SDB_Training_Size = 0;
 	       try {
 	           ArrayList<ArrayList<String>> records = readCSV(path);
@@ -154,11 +155,10 @@ public class T2SDB {
        return SDB_Training_Size;
    }
     //weka
-    public int translate_training_sliding_window_weka(int next_week, String path, HashMap<Integer, String> class_table, String output) {
+    public int translate_training_sliding_window_weka(int next_week, String path, HashMap<Integer, String> class_table, String output, ArrayList<ArrayList<String>> original_data) {
 	       int SDB_Training_Size = 0;
 	       try {
-	           ArrayList<ArrayList<String>> records = readCSV(path);
-	           int training_data = (int)((records.size()- 1)*0.8);
+	           ArrayList<ArrayList<String>> records = readCSV(path);	          
 	           //output
 	           File fout = new File(output);
 		       FileOutputStream fos = new FileOutputStream(fout);
@@ -166,24 +166,33 @@ public class T2SDB {
 		       
 		       //Write Title
 	 	        int size = next_week*(records.get(0).size()-2);
-		        for (int i = 1; i <= size; i++) {
-		        	osw.write("A" + i  + ", ");    	
-		        }   	
+	 	        int t ;
+		        for (t = 1; t <= size; t++) {
+		        	osw.write("A" + t  + ", ");    	
+		        }   
+		   
 		        osw.write("Target");  
 		        osw.write("\r\n");   
-//		       System.out.println(training_data-window_size+1);
-	           for (int i = 1; i < records.size(); i++) { 
+//		        System.out.println(training_data-window_size+1);
+	            for (int i = 1; i < records.size(); i++) { 
+	               double average = 0;
 	               for (int p = 0; p < next_week; p++) {
 	                   int index = i + p; 
+	                   
 	                   if ((index  <records.size()) && ((i + next_week) <records.size())) {    
+	                	   //索引大小
 	                       for (int k = 1; k < records.get(index).size()-1; k++) {
 //	                   	       osw.write("("+ index+ ")"+ " "+records.get(index).get(k) + " ");       
 	                           osw.write(records.get(index).get(k) + ", "); 	       
 	                       }                       
 	                       //osw.write(-1 + " ");
 	                   } 
-	               }    
-	               //Add Target Class
+	                   
+	               }
+	             
+	              
+	               
+	            //Add Target Class
                 int Target_class_index = i + next_week;
 	               if (Target_class_index <records.size()) {
 	                   osw.write(class_table.get(Target_class_index));
@@ -207,99 +216,133 @@ public class T2SDB {
 	       return SDB_Training_Size;
 	}
     
-    public void translate_training_weka(int next_week, String path, HashMap<Integer, String> class_table, String output) {
-        try {
-            ArrayList<ArrayList<String>> records = readCSV(path);
-            int training_data = (int)((records.size() - 1)*0.8);
-                       
-            //output
-            File fout = new File(output);
- 	        FileOutputStream fos = new FileOutputStream(fout);
- 	        OutputStreamWriter osw = new OutputStreamWriter(fos);   
-// 	        System.out.println(training_data-window_size+1);
- 	        
- 	        //Write Title
- 	        int size = next_week*(records.get(0).size()-1);
-	        for (int i = 1; i <= size; i++) {
-	        	osw.write("A" + i  + ", ");    	
-	        }   	
-	        osw.write("Target");  
-	        osw.write("\r\n");   	         	         	         	        
-            for (int i = 1; i <= training_data; i += next_week) { 
-                        for (int p = 0; p < next_week; p++) {
-                     	    int index = i + p;
-                            if ((index  <= training_data) && ((i + next_week) <= training_data)) {    
-                                for (int k = 1; k < records.get(index).size(); k++) {
-//                    	           osw.write("("+ index+ ")"+records.get(index).get(k) + ", ");       
-                         	       osw.write(records.get(index).get(k) + ", "); 
-                                }                                                      
-                            } 
-                        }
-                        //Add Target Class
-                        int Target_class_index = i + next_week;
-                        if (Target_class_index <= training_data) {
-                            osw.write(class_table.get(Target_class_index));              
-//                          osw.write("("+ Target_class_index + ")"+class_table.get(Target_class_index));
-                        } else {
-                     	   break;
-                        }               
-                        osw.write("\r\n");                                                                                                                     
-            }
-            osw.close();                  
-        } catch (FileNotFoundException e) {
- 	       System.out.println("[ERROR] File Not Found Exception.");
- 	    e.printStackTrace();
- 	   } catch (IOException e) {
-            System.out.println("[ERROR] I/O Exception.");
-            e.printStackTrace();
-       }        
-    }
+    //weka
+    public int translate_training_sliding_window_weka_including_level(int next_week, String path, HashMap<Integer, String> class_table, String output, int have_average ,ArrayList<ArrayList<String>> original_data) {
+	       int SDB_Training_Size = 0;
+	       try {
+	           ArrayList<ArrayList<String>> records = readCSV(path);	          
+	           //output
+	           File fout = new File(output);
+		       FileOutputStream fos = new FileOutputStream(fout);
+		       OutputStreamWriter osw = new OutputStreamWriter(fos);   
+		       
+		       //Write Title
+	 	        int size = next_week*(records.get(0).size()-2);
+	 	        int t ;
+		        for (t = 1; t <= size; t++) {
+		        	osw.write("A" + t  + ", ");    	
+		        }   
+		        //原始資料的平均與中位數
+		        if (have_average == 1) {
+		        	osw.write("A" + t  + ", ");    	
+		        	t++;
+		        	osw.write("A" + t  + ", ");  
+		        	t++;
+		        	osw.write("A" + t  + ", "); 
+		        	t++;
+		        	osw.write("A" + t  + ", "); 
+		        	t++;
+		        	osw.write("A" + t  + ", ");    	
+		        	t++;
+		        	osw.write("A" + t  + ", ");  
+		        	t++;
+		        	osw.write("A" + t  + ", "); 
+		        	t++;
+		        	osw.write("A" + t  + ", "); 
+		        }
+		        
+		        
+		        osw.write("Target");  
+		        osw.write("\r\n");  
+		        
+//		        System.out.println(training_data-window_size+1);
+	            for (int i = 1; i < records.size(); i++) { 
+	               double average_cruede = 0;
+	               double average_smr = 0;
+	               double average_rate = 0;
+	               double average_t = 0;
+	               
+	               ArrayList<Double> cruede = new  ArrayList<>();
+	               ArrayList<Double> smr = new  ArrayList<>();
+	               ArrayList<Double> rate = new  ArrayList<>();
+	               ArrayList<Double> target = new  ArrayList<>();
+	               for (int p = 0; p < next_week; p++) {
+	                   int index = i + p; 
+	                   
+	                   if ((index  <records.size()) && ((i + next_week) <records.size())) {    
+	                	   //索引大小
+	                       for (int k = 1; k < records.get(index).size()-1; k++) {
+//	                   	       osw.write("("+ index+ ")"+ " "+records.get(index).get(k) + " ");       
+	                           osw.write(records.get(index).get(k) + ", "); 	       
+	                       }                       
+	                       //osw.write(-1 + " ");
+	                   } 
+	                   //System.out.println( Double.parseDouble(original_data.get(index).get(1)));
+	                   average_cruede = average_cruede + Double.parseDouble(original_data.get(index).get(1));
+	                   
+	                   cruede.add(Double.parseDouble(original_data.get(index).get(1)));
+	                 
+	                   average_smr = average_smr + Double.parseDouble(original_data.get(index).get(2));
+	                   smr.add(Double.parseDouble(original_data.get(index).get(2)));
+	                   
+	                   average_rate = average_rate + Double.parseDouble(original_data.get(index).get(3));
+	                   rate.add(Double.parseDouble(original_data.get(index).get(3)));
+	                   
+	                   average_t = average_t + Double.parseDouble(original_data.get(index).get(4));
+	                   target.add(Double.parseDouble(original_data.get(index).get(4)));
+	               }
+	               
+	               if ((i + next_week) <records.size()) {
+	                   average_cruede /= next_week;
+	                   osw.write(average_cruede + ", "); 
+	               
+	                   average_smr /= next_week;
+	                   osw.write(average_smr + ", "); 
+	               
+	                   average_rate /= next_week;
+	                   osw.write(average_rate  + ", "); 
+	               
+	                   average_t /= next_week;
+	                   osw.write(average_t + ", "); 
+	                   
+	                   Collections.sort(cruede);
+	                   Collections.sort(smr);
+	                   Collections.sort(rate);
+	                   Collections.sort(target);
+	                   
+	                   osw.write(med(cruede) + ", "); 
+	                   osw.write(med(smr) + ", "); 
+	                   osw.write(med(rate) + ", "); 
+	                   osw.write(med(target) + ", "); 
+
+	               }
+	              
+	               
+	            //Add Target Class
+                int Target_class_index = i + next_week;
+	               if (Target_class_index <records.size()) {
+	                   osw.write(class_table.get(Target_class_index));
+	                   //Debug
+//	                   osw.write(class_table.get(Target_class_index) + "(" + Target_class_index + ")" + " "+ -1 + " ");
+	               } else {
+	                   break;
+	               } 
+	               SDB_Training_Size++;
+	             
+	               osw.write("\r\n");  
+	           }
+	           osw.close();        
+	       } catch (FileNotFoundException e) {
+		       System.out.println("[ERROR] File Not Found Exception.");
+		    e.printStackTrace();
+		   } catch (IOException e) {
+	           System.out.println("[ERROR] I/O Exception.");
+	           e.printStackTrace();
+	       }        
+	       return SDB_Training_Size;
+	}
     
-    public int translate_testing_sliding_window(int next_week, String path, String output) {
-    	    int SDB_Testing_Size = 0;
-    	try {
-        	
-            ArrayList<ArrayList<String>> records = readCSV(path);                          
-            int training_data = (int)((records.size()-1)*0.8);       
-            
-            //output
-            File fout = new File(output);
- 	        FileOutputStream fos = new FileOutputStream(fout);
- 	        OutputStreamWriter osw = new OutputStreamWriter(fos);       
-// 	        System.out.println(training_data + 1);
-            for (int i = training_data + 1; i < records.size()-next_week; i++) {
-//         	   System.out.println(i);
-                for (int j = 0; j < next_week;j++) {
-                    int index = i + j; 
-                    if (index < records.size()) {           
-                 	   
-                 	   for (int k = 1;k < records.get(i).size()-1; k++) {
-                     	   osw.write(records.get(index).get(k) + " ");    
-//                     	   osw.write("("+ index+ ")"+records.get(index).get(k) + " ");       
-                       }                       
-                        osw.write(-1 + " ");                       
-                        
-                    } else {
-                 	
-                 	   break;
-                    }
-                }                 
-                osw.write(""+-2);
-                osw.write("\r\n");    
-                SDB_Testing_Size++;
-            }
-            osw.close(); 
-            //System.out.println("Testing Data's window number: " + (records.size()- 1 - training_data) );
-            //System.out.println("===================================================\n");   
-        } catch (FileNotFoundException e) {
- 	       System.out.println("[ERROR] File Not Found Exception.");
- 	       e.printStackTrace();
- 	   } catch (IOException e) {
-            System.out.println("[ERROR] I/O Exception.");
-            e.printStackTrace();
-        }  
-        return SDB_Testing_Size;
-    } 
+   
     
     
    public void translate_testing(int next_week, String path, String output) {
@@ -344,6 +387,7 @@ public class T2SDB {
            e.printStackTrace();
        }  
    } 
+   
    //weka
    public int translate_testing_sliding_window_weka(int next_week, String path, HashMap<Integer, String> class_table, String output) {
 	       int SDB_Training_Size = 0;
@@ -432,7 +476,7 @@ public class T2SDB {
                int Target_class_index = i + next_week;
                if (Target_class_index < records.size()) {
                    osw.write(class_table.get(Target_class_index));              
-//                   osw.write("("+ Target_class_index + ")"+class_table.get(Target_class_index));
+//                 osw.write("("+ Target_class_index + ")"+class_table.get(Target_class_index));
                } else {
             	   break;
                }               
@@ -465,5 +509,23 @@ public class T2SDB {
 	   return records; 
    }
    
+   public static double med(ArrayList<Double> a) {
+
+	    double m = 0;
+
+	    int len = a.size();
+
+	    if(len%2==0) {
+
+	        m = (double) (a.get(len/2) + a.get(len/2-1)/2.0);
+
+	    } else {
+
+	        m = a.get(len-1)/ (double) 2;
+
+	    }
+
+	    return m;
+   }
    
 }

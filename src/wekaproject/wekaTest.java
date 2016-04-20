@@ -21,7 +21,7 @@ import libsvm.svm_parameter;
 import transferToSDB.T2SDB;
 import weka.core.converters.ArffSaver;
 public class wekaTest {
-	static HashSet<List<String>> powerSet = new HashSet<List<String>>();
+	
 	
 	
 	public static BufferedReader readDataFile(String filename) {
@@ -59,9 +59,9 @@ public class wekaTest {
 		return 100 * correct / predictions.size();
 	}
  
-	public static void run(List<String> para_list) throws Exception {
+	public static void run(int period) throws Exception {
 
-		BufferedReader datafile = readDataFile("preprocessing\\weka_training_" + para_list +"_.arff");
+		BufferedReader datafile = readDataFile("C:\\user\\workspace\\wekaproject\\preprocessing\\weka_training_" + period  +".arff");
  
 		Instances data = new Instances(datafile);
 		//System.out.println(data.numAttributes() - 1);
@@ -78,7 +78,7 @@ public class wekaTest {
 		// Use a set of classifiers
 		Classifier[] models = { 
 				new J48(), // a decision tree			
-				new Logistic(),	
+//				new Logistic(),	
 				new LibSVM(),
 		};
  
@@ -86,7 +86,7 @@ public class wekaTest {
 		for (int j = 0; j < models.length; j++) {
 			    
 			//SVM MODULE, SET KERNEL
-            if (j == 2) {
+            if (j == 1) {
             	
             	
             	try {        	
@@ -99,13 +99,13 @@ public class wekaTest {
     		        predictions.appendElements(validation.predictions());
     		        		     
     		        double percentage  = validation.correct()/(double)(validation.incorrect() + validation.correct());
-		            if (percentage < 0.8) continue;
+		            if (percentage < 0.7) continue;
     		        
-                	File fout = new File("C:\\user\\workspace\\wekaproject\\data\\" + "svm_liner_" + para_list+".arff");                	
+                	File fout = new File("C:\\user\\workspace\\wekaproject\\data\\" + "svm_liner_" + period+".arff");                	
              	    FileOutputStream fos = new FileOutputStream(fout);
                     OutputStreamWriter osw = new OutputStreamWriter(fos);            	
             	    
-            	   
+            	    
             	
             	   
     		        osw.write(validation.toSummaryString("\nResults:SVM(LINEAR)\n======\n", true)); 
@@ -129,9 +129,9 @@ public class wekaTest {
             	    FastVector predictions = new FastVector();
     		        predictions.appendElements(validation.predictions());
     		        double percentage  = validation.correct()/(double)(validation.incorrect() + validation.correct());
-		            if (percentage < 0.8) continue;
+		            if (percentage < 0.7) continue;
             		
-                	File fout = new File("C:\\user\\workspace\\wekaproject\\data\\" + "svm_poly_" + para_list+".arff");                	
+                	File fout = new File("C:\\user\\workspace\\wekaproject\\data\\" + "svm_poly_" + period+".arff");                	
              	    FileOutputStream fos = new FileOutputStream(fout);
                     OutputStreamWriter osw = new OutputStreamWriter(fos);   
                     
@@ -154,9 +154,9 @@ public class wekaTest {
 		            Evaluation validation = classify(models[j], train, test); 
 		            predictions.appendElements(validation.predictions());
 		            double percentage  = validation.correct()/(double)(validation.incorrect() + validation.correct());
-		            if (percentage < 0.8) continue;
+		            if (percentage < 0.7) continue;
 		            
-                    File fout = new File("C:\\user\\workspace\\wekaproject\\data\\" + models[j].getClass().getSimpleName() + "_" + para_list+".arff");                	
+                    File fout = new File("C:\\user\\workspace\\wekaproject\\data\\" + models[j].getClass().getSimpleName() + "_" + period+".arff");                	
              	    FileOutputStream fos = new FileOutputStream(fout);
                     OutputStreamWriter osw = new OutputStreamWriter(fos);   			        
  
@@ -188,8 +188,7 @@ public class wekaTest {
 	}
 	
 	private static void buildPowerSet(List<String> list, int count) {
-	    powerSet.add(list);
-
+	   
 	    for(int i=0; i<list.size(); i++)
 	    {
 	        List<String> temp = new ArrayList<String>(list);
@@ -254,42 +253,48 @@ public class wekaTest {
 	public static void main(String[] args) throws Exception {		
 		
 		List<String> parameter = new ArrayList<>();
-		parameter.add("FT_but_categories");
-		parameter.add("Match_of_rate_but_categories");
-		parameter.add("Match_of_oil_but_categories");
-		parameter.add("Match_of_oil_rate_categories");
-		parameter.add("Match_of_rubber_but_categories");
-		parameter.add("FS_oil_categories");
-		parameter.add("FS_rubber_categories");
-		parameter.add("FS_rate_categories");
+		//parameter.add("FT_b_c");
+		//parameter.add("M_of_rubber_b_c");
+		//parameter.add("M_of_o_b_c");
+		//parameter.add("M_of_o_rate_c");
+		//parameter.add("M_of_rate_b_c");
+		//parameter.add("FS_o_c");
+		//parameter.add("FS_rubber_c");
+		//parameter.add("FS_rate_c");
+		//parameter.add("B_N_T_2_001");
+		//parameter.add("B_N_T_3_001");
+		//parameter.add("B_N_T_4_001");
+		//parameter.add("B_N_T_5_001");
 		parameter.add("BIAS_T_2_0001");
-		parameter.add("BIAS_T_3_0001");
+		//parameter.add("BIAS_T_3_0001");
 		//parameter.add("BIAS_T_4_0001");
 		//parameter.add("BIAS_T_5_0001");
-		buildPowerSet(parameter,parameter.size());
+		//buildPowerSet(parameter,parameter.size());
 		
-		for (List<String> para_list : powerSet) {
+		//這個powerSet只有一種集合
+		HashSet<List<String>> powerSet = new HashSet<List<String>>();
+		powerSet.add(parameter);
 		
-			if (para_list.isEmpty()) continue;
-			//System.out.println(para_list);
+		//for (List<String> para_list : powerSet) {		
+			//if (para_list.isEmpty()) continue;
 			String path = "petro_subset1_2010_rate.csv";    	    
     	    ArrayList<ArrayList<String>> records = readCSV(path);
     	    
     	    /**Feature Extraction**/    	
     	    HashMap<Integer, String> feature_target = GetAttr.featureExtraction_target(records);
-    	    GetAttr.featureExtraction_weka("C:\\user\\workspace\\wekaproject\\preprocessing\\weka_" + para_list + "_.csv" , records, feature_target, para_list);  
+    	    int period = Integer.parseInt(args[0]); 
+    	    GetAttr.featureExtraction_weka("C:\\user\\workspace\\wekaproject\\preprocessing\\weka_"  + period + ".csv" , records, feature_target, period);  
     	    //System.out.println(para_list);
     	    /**Translate To SDB**/
     	    /**1.Training Data**/
     	    
     	    T2SDB t2sdb = new T2SDB();       	  
-    	    //t2sdb.translate_training_sliding_window_weka(10, "petro_subset1_2010_rate.csv", feature_target, "weka_training.txt");
-    	    t2sdb.translate_training_sliding_window_weka(10, "C:\\user\\workspace\\wekaproject\\preprocessing\\weka_" + para_list + "_.csv", feature_target, "C:\\user\\workspace\\wekaproject\\preprocessing\\weka_training_" + para_list +"_.txt");
+    	    t2sdb.translate_training_sliding_window_weka_including_level(10, "C:\\user\\workspace\\wekaproject\\preprocessing\\weka_" + period  + ".csv", feature_target, "C:\\user\\workspace\\wekaproject\\preprocessing\\weka_training_" + period  +".txt",1, records);
     	    
     	    try {
-                ArrayList<ArrayList<String>> txt_training = read_text_weka("C:\\user\\workspace\\wekaproject\\preprocessing\\weka_training_" + para_list +"_.txt");  
+                ArrayList<ArrayList<String>> txt_training = read_text_weka("C:\\user\\workspace\\wekaproject\\preprocessing\\weka_training_" + period  +".txt");  
                 try {
-    		        writeCSV("", "C:\\user\\workspace\\wekaproject\\preprocessing\\weka_training_" + para_list +"_.csv", txt_training);
+    		        writeCSV("", "C:\\user\\workspace\\wekaproject\\preprocessing\\weka_training_" + period  +".csv", txt_training);
     		    } catch (IOException e) {
    			        System.out.println("[ERROR] I/O Exception.");
     			    e.printStackTrace();
@@ -301,18 +306,18 @@ public class wekaTest {
     	    
     	    // load CSV
     	    CSVLoader loader = new CSVLoader();
-    	    loader.setSource(new File("C:\\user\\workspace\\wekaproject\\preprocessing\\weka_training_" + para_list +"_.csv"));
+    	    loader.setSource(new File("C:\\user\\workspace\\wekaproject\\preprocessing\\weka_training_" + period  +".csv"));
     	    Instances data1 = loader.getDataSet();
     	    // save ARFF
     	    ArffSaver saver = new ArffSaver();
     	    saver.setInstances(data1);
-    	    saver.setFile(new File("C:\\user\\workspace\\wekaproject\\preprocessing\\weka_training_" + para_list +"_.arff"));
+    	    saver.setFile(new File("C:\\user\\workspace\\wekaproject\\preprocessing\\weka_training_" + period  +".arff"));
     	    //saver.setDestination(new File(args[1]));
-    	    saver.writeBatch();
-    	    
-    	    run(para_list);
+    	    saver.writeBatch();    	    
+    	    run(period);
             
-		}
+		//}
 		
 	}
+	
 }
