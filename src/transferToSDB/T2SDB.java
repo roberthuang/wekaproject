@@ -234,6 +234,7 @@ public class T2SDB {
 		        }   
 		        //原始資料的平均與中位數
 		        if (have_average == 1) {
+		        	//平均值
 		        	osw.write("A" + t  + ", ");    	
 		        	t++;
 		        	osw.write("A" + t  + ", ");  
@@ -242,6 +243,7 @@ public class T2SDB {
 		        	t++;
 		        	osw.write("A" + t  + ", "); 
 		        	t++;
+		        	//中位數
 		        	osw.write("A" + t  + ", ");    	
 		        	t++;
 		        	osw.write("A" + t  + ", ");  
@@ -257,6 +259,8 @@ public class T2SDB {
 		        
 //		        System.out.println(training_data-window_size+1);
 	            for (int i = 1; i < records.size(); i++) { 
+	            	
+	               	
 	               double average_cruede = 0;
 	               double average_smr = 0;
 	               double average_rate = 0;
@@ -277,6 +281,8 @@ public class T2SDB {
 	                       }                       
 	                       //osw.write(-1 + " ");
 	                   } 
+	                   
+	                   if (have_average == 1) {
 	                   //System.out.println( Double.parseDouble(original_data.get(index).get(1)));
 	                   average_cruede = average_cruede + Double.parseDouble(original_data.get(index).get(1));
 	                   
@@ -290,31 +296,32 @@ public class T2SDB {
 	                   
 	                   average_t = average_t + Double.parseDouble(original_data.get(index).get(4));
 	                   target.add(Double.parseDouble(original_data.get(index).get(4)));
+	                   }
 	               }
+	               if (have_average == 1) {
+	                   if ((i + next_week) <records.size()) {
+	                       average_cruede /= next_week;
+	                       osw.write(average_cruede + ", "); 
 	               
-	               if ((i + next_week) <records.size()) {
-	                   average_cruede /= next_week;
-	                   osw.write(average_cruede + ", "); 
+	                       average_smr /= next_week;
+	                       osw.write(average_smr + ", "); 
 	               
-	                   average_smr /= next_week;
-	                   osw.write(average_smr + ", "); 
+	                       average_rate /= next_week;
+	                       osw.write(average_rate  + ", "); 
 	               
-	                   average_rate /= next_week;
-	                   osw.write(average_rate  + ", "); 
-	               
-	                   average_t /= next_week;
-	                   osw.write(average_t + ", "); 
+	                       average_t /= next_week;
+	                       osw.write(average_t + ", "); 
 	                   
-	                   Collections.sort(cruede);
-	                   Collections.sort(smr);
-	                   Collections.sort(rate);
-	                   Collections.sort(target);
+	                       Collections.sort(cruede);
+	                       Collections.sort(smr);
+	                       Collections.sort(rate);
+	                       Collections.sort(target);
 	                   
-	                   osw.write(med(cruede) + ", "); 
-	                   osw.write(med(smr) + ", "); 
-	                   osw.write(med(rate) + ", "); 
-	                   osw.write(med(target) + ", "); 
-
+	                       osw.write(med(cruede) + ", "); 
+	                       osw.write(med(smr) + ", "); 
+	                       osw.write(med(rate) + ", "); 
+	                       osw.write(med(target) + ", "); 
+	                   }
 	               }
 	              
 	               
