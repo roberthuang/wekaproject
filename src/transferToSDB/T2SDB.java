@@ -242,6 +242,7 @@ public class T2SDB {
 		        	osw.write("A" + t  + ", "); 
 		        	t++;
 		        	osw.write("A" + t  + ", "); 
+		        	
 		        	t++;
 		        	//¤¤¦ì¼Æ
 		        	osw.write("A" + t  + ", ");    	
@@ -312,11 +313,15 @@ public class T2SDB {
 	                       average_t /= next_week;
 	                       osw.write(average_t + ", "); 
 	                   
-	                       Collections.sort(cruede);
+	                       Collections.sort(cruede);	                      
 	                       Collections.sort(smr);
 	                       Collections.sort(rate);
 	                       Collections.sort(target);
-	                   
+//	                       for (int g = 0; g < target.size(); g++) {
+//	                           System.out.print(target.get(g) + "  ");   
+//	                            
+//	                       }
+//	                       System.out.println("MED: " + med(target)); 
 	                       osw.write(med(cruede) + ", "); 
 	                       osw.write(med(smr) + ", "); 
 	                       osw.write(med(rate) + ", "); 
@@ -521,14 +526,15 @@ public class T2SDB {
 	    double m = 0;
 
 	    int len = a.size();
-
+	    //even
 	    if(len%2==0) {
 
-	        m = (double) (a.get(len/2) + a.get(len/2-1)/2.0);
-
+	        m = (double) (a.get(len/2-1) + a.get(len/2))/ (double)2.0;
+	        
+        //odd
 	    } else {
 
-	        m = a.get(len-1)/ (double) 2;
+	        m = a.get(len/ 2-1);
 
 	    }
 
