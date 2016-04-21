@@ -272,6 +272,10 @@ public class wekaTest {
 		parameter.add("D_N_R_" + period);
 		parameter.add("D_N_T_" + period);
 		
+		parameter.add("M_R_C_" + period);
+		parameter.add("M_R_S_" + period);
+		parameter.add("M_R_R_" + period);
+		parameter.add("M_R_T_" + period);
 		
 		//這個powerSet只有一種集合
 		//HashSet<List<String>> powerSet = new HashSet<List<String>>();

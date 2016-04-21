@@ -461,8 +461,7 @@ public class GetAttr {
     	    	double now = Double.parseDouble(records.get(i).get(att_index));
     	    	
     	    	double relative = (now - pre)/ (double) pre;
-    	    	result.put(i, relative);
-    	    	
+    	    	result.put(i, relative);	    	
     	    	average += relative;
     	    }
     		
@@ -476,6 +475,36 @@ public class GetAttr {
     	}
     	return result;
     }
+    
+    public static HashMap<Integer, Double> MA_relative(HashMap<Integer, Double> MA) {
+    	HashMap<Integer, Double> result = new HashMap<>();
+    	double average = 0;
+    	for (int i = 1; i < MA.size(); i++) {
+    	    //Empty
+    		if (i == 1)	{
+    	    	
+    	    } else {
+    	    	double pre = MA.get(i-1);
+    	    	double now = MA.get(i);
+    	    	
+    	    	double relative = (now - pre)/ (double) pre;
+    	    	result.put(i, relative);	    	
+    	    	average += relative;
+    	    }
+    		
+    	}
+    	
+    	average /= result.keySet().size();
+    	for (int i = 1; i < MA.size(); i++) {
+    	    if (result.get(i) == null) {
+    	    	result.put(i, average);
+    	    }    		
+    	}
+    	return result;
+    }
+    
+    
+    
     
     //weka
     public static void featureExtraction_weka(String output_filename, ArrayList<ArrayList<String>> records, HashMap<Integer, String> feature_target, int period, List<String> para_list) {		
@@ -580,8 +609,51 @@ public class GetAttr {
 	  	HashMap<Integer, Double> M_N_R_10 = Move_Average_Numeric(10,3, records);
 	  	HashMap<Integer, Double> M_N_T_10 = Move_Average_Numeric(10,4, records);
 	  	
+	  	//MA's Relative
+	  	HashMap<Integer, Double> M_R_C_2 = MA_relative(M_N_C_2);
+	  	HashMap<Integer, Double> M_R_S_2 = MA_relative(M_N_S_2);
+	  	HashMap<Integer, Double> M_R_R_2 = MA_relative(M_N_R_2);
+	  	HashMap<Integer, Double> M_R_T_2 = MA_relative(M_N_T_2);
 	  	
+		HashMap<Integer, Double> M_R_C_3 = MA_relative(M_N_C_3);
+	  	HashMap<Integer, Double> M_R_S_3 = MA_relative(M_N_S_3);
+	  	HashMap<Integer, Double> M_R_R_3 = MA_relative(M_N_R_3);
+	  	HashMap<Integer, Double> M_R_T_3 = MA_relative(M_N_T_3);
 	  	
+	  	HashMap<Integer, Double> M_R_C_4 = MA_relative(M_N_C_4);
+	  	HashMap<Integer, Double> M_R_S_4 = MA_relative(M_N_S_4);
+	  	HashMap<Integer, Double> M_R_R_4 = MA_relative(M_N_R_4);
+	  	HashMap<Integer, Double> M_R_T_4 = MA_relative(M_N_T_4);
+	  	
+	 	HashMap<Integer, Double> M_R_C_5 = MA_relative(M_N_C_5);
+	  	HashMap<Integer, Double> M_R_S_5 = MA_relative(M_N_S_5);
+	  	HashMap<Integer, Double> M_R_R_5 = MA_relative(M_N_R_5);
+	  	HashMap<Integer, Double> M_R_T_5 = MA_relative(M_N_T_5);
+	  	
+	  	HashMap<Integer, Double> M_R_C_6 = MA_relative(M_N_C_6);
+	  	HashMap<Integer, Double> M_R_S_6 = MA_relative(M_N_S_6);
+	  	HashMap<Integer, Double> M_R_R_6 = MA_relative(M_N_R_6);
+	  	HashMap<Integer, Double> M_R_T_6 = MA_relative(M_N_T_6);
+	  	
+	  	HashMap<Integer, Double> M_R_C_7 = MA_relative(M_N_C_7);
+	  	HashMap<Integer, Double> M_R_S_7 = MA_relative(M_N_S_7);
+	  	HashMap<Integer, Double> M_R_R_7 = MA_relative(M_N_R_7);
+	  	HashMap<Integer, Double> M_R_T_7 = MA_relative(M_N_T_7);
+	  	
+	  	HashMap<Integer, Double> M_R_C_8 = MA_relative(M_N_C_8);
+	  	HashMap<Integer, Double> M_R_S_8 = MA_relative(M_N_S_8);
+	  	HashMap<Integer, Double> M_R_R_8 = MA_relative(M_N_R_8);
+	  	HashMap<Integer, Double> M_R_T_8 = MA_relative(M_N_T_8);
+	  	
+	  	HashMap<Integer, Double> M_R_C_9 = MA_relative(M_N_C_9);
+	  	HashMap<Integer, Double> M_R_S_9 = MA_relative(M_N_S_9);
+	  	HashMap<Integer, Double> M_R_R_9 = MA_relative(M_N_R_9);
+	  	HashMap<Integer, Double> M_R_T_9 = MA_relative(M_N_T_9);
+	  	
+	  	HashMap<Integer, Double> M_R_C_10 = MA_relative(M_N_C_10);
+	  	HashMap<Integer, Double> M_R_S_10 = MA_relative(M_N_S_10);
+	  	HashMap<Integer, Double> M_R_R_10 = MA_relative(M_N_R_10);
+	  	HashMap<Integer, Double> M_R_T_10 = MA_relative(M_N_T_10);
 	  	
 	    //MA_Diff
 	  	HashMap<Integer, Double> D_N_C_2 = Move_Average_Diff_Numeric(2,1, records);
@@ -1022,6 +1094,130 @@ public class GetAttr {
 					    case "D_N_T_10":
 					        temp.add(String.valueOf(D_N_T_10.get(i)));
 					    	break; 
+					    	
+					  
+					    	
+					    //MA Relative
+					    case "M_R_C_2":
+					        temp.add(String.valueOf(M_R_C_2.get(i)));
+					    	break;
+					    case "M_R_S_2":
+					        temp.add(String.valueOf(M_R_S_2.get(i)));
+					    	break;
+					    case "M_R_R_2":
+					        temp.add(String.valueOf(M_R_R_2.get(i)));
+					    	break;
+					    case "M_R_T_2":
+					        temp.add(String.valueOf(M_R_T_2.get(i)));
+					    	break; 
+					    	
+					    case "M_R_C_3":
+					        temp.add(String.valueOf(M_R_C_3.get(i)));
+					    	break;
+					    case "M_R_S_3":
+					        temp.add(String.valueOf(M_R_S_3.get(i)));
+					    	break;
+					    case "M_R_R_3":
+					        temp.add(String.valueOf(M_R_R_3.get(i)));
+					    	break;
+					    case "M_R_T_3":
+					        temp.add(String.valueOf(M_R_T_3.get(i)));
+					    	break; 
+					  
+					    case "M_R_C_4":
+					        temp.add(String.valueOf(M_R_C_4.get(i)));
+					    	break;
+					    case "M_R_S_4":
+					        temp.add(String.valueOf(M_R_S_4.get(i)));
+					    	break;
+					    case "M_R_R_4":
+					        temp.add(String.valueOf(M_R_R_4.get(i)));
+					    	break;
+					    case "M_R_T_4":
+					        temp.add(String.valueOf(M_R_T_4.get(i)));
+					    	break; 
+					    	
+					    case "M_R_C_5":
+					        temp.add(String.valueOf(M_R_C_5.get(i)));
+					    	break;
+					    case "M_R_S_5":
+					        temp.add(String.valueOf(M_R_S_5.get(i)));
+					    	break;
+					    case "M_R_R_5":
+					        temp.add(String.valueOf(M_R_R_5.get(i)));
+					    	break;
+					    case "M_R_T_5":
+					        temp.add(String.valueOf(M_R_T_5.get(i)));
+					    	break; 
+					
+					    case "M_R_C_6":
+					        temp.add(String.valueOf(M_R_C_6.get(i)));
+					    	break;
+					    case "M_R_S_6":
+					        temp.add(String.valueOf(M_R_S_6.get(i)));
+					    	break;
+					    case "M_R_R_6":
+					        temp.add(String.valueOf(M_R_R_6.get(i)));
+					    	break;
+					    case "M_R_T_6":
+					        temp.add(String.valueOf(M_R_T_6.get(i)));
+					    	break; 
+					    	 	
+					    case "M_R_C_7":
+					        temp.add(String.valueOf(M_R_C_7.get(i)));
+					    	break;
+					    case "M_R_S_7":
+					        temp.add(String.valueOf(M_R_S_7.get(i)));
+					    	break;
+					    case "M_R_R_7":
+					        temp.add(String.valueOf(M_R_R_7.get(i)));
+					    	break;
+					    case "M_R_T_7":
+					        temp.add(String.valueOf(M_R_T_7.get(i)));
+					    	break; 
+				
+					    case "M_R_C_8":
+					        temp.add(String.valueOf(M_R_C_8.get(i)));
+					    	break;
+					    case "M_R_S_8":
+					        temp.add(String.valueOf(M_R_S_8.get(i)));
+					    	break;
+					    case "M_R_R_8":
+					        temp.add(String.valueOf(M_R_R_8.get(i)));
+					    	break;
+					    case "M_R_T_8":
+					        temp.add(String.valueOf(M_R_T_8.get(i)));
+					    	break; 
+					    	
+					    case "M_R_C_9":
+					        temp.add(String.valueOf(M_R_C_9.get(i)));
+					    	break;
+					    case "M_R_S_9":
+					        temp.add(String.valueOf(M_R_S_9.get(i)));
+					    	break;
+					    case "M_R_R_9":
+					        temp.add(String.valueOf(M_R_R_9.get(i)));
+					    	break;
+					    case "M_R_T_9":
+					        temp.add(String.valueOf(M_R_T_9.get(i)));
+					    	break; 
+					    	
+					    case "M_R_C_10":
+					        temp.add(String.valueOf(M_R_C_10.get(i)));
+					    	break;
+					    case "M_R_S_10":
+					        temp.add(String.valueOf(M_R_S_10.get(i)));
+					    	break;
+					    case "M_R_R_10":
+					        temp.add(String.valueOf(M_R_R_10.get(i)));
+					    	break;
+					    case "M_R_T_10":
+					        temp.add(String.valueOf(M_R_T_10.get(i)));
+					    	break; 
+					    	
+					    	
+					    	
+					    	
  					}
  					
 				}
