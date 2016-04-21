@@ -547,6 +547,54 @@ public class GetAttr {
 	  	HashMap<Integer, Double> M_N_T_10 = Move_Average_Numeric(10,4, records);
 	  	
 	  	
+	  	
+	  	
+	    //MA_Diff
+	  	HashMap<Integer, Double> D_N_C_2 = Move_Average_Diff_Numeric(2,1, records);
+	  	HashMap<Integer, Double> D_N_S_2 = Move_Average_Diff_Numeric(2,2, records);
+	  	HashMap<Integer, Double> D_N_R_2 = Move_Average_Diff_Numeric(2,3, records);
+	  	HashMap<Integer, Double> D_N_T_2 = Move_Average_Diff_Numeric(2,4, records);
+	  	
+	  	HashMap<Integer, Double> D_N_C_3 = Move_Average_Diff_Numeric(3,1, records);
+	  	HashMap<Integer, Double> D_N_S_3 = Move_Average_Diff_Numeric(3,2, records);
+	  	HashMap<Integer, Double> D_N_R_3 = Move_Average_Diff_Numeric(3,3, records);
+	  	HashMap<Integer, Double> D_N_T_3 = Move_Average_Diff_Numeric(3,4, records);
+	  	
+	  	HashMap<Integer, Double> D_N_C_4 = Move_Average_Diff_Numeric(4,1, records);
+	  	HashMap<Integer, Double> D_N_S_4 = Move_Average_Diff_Numeric(4,2, records);
+	  	HashMap<Integer, Double> D_N_R_4 = Move_Average_Diff_Numeric(4,3, records);
+	  	HashMap<Integer, Double> D_N_T_4 = Move_Average_Diff_Numeric(4,4, records);
+	  	
+		HashMap<Integer, Double> D_N_C_5 = Move_Average_Diff_Numeric(5,1, records);
+	  	HashMap<Integer, Double> D_N_S_5 = Move_Average_Diff_Numeric(5,2, records);
+	  	HashMap<Integer, Double> D_N_R_5 = Move_Average_Diff_Numeric(5,3, records);
+	  	HashMap<Integer, Double> D_N_T_5 = Move_Average_Diff_Numeric(5,4, records);
+	  	
+	  	HashMap<Integer, Double> D_N_C_6 = Move_Average_Diff_Numeric(6,1, records);
+	  	HashMap<Integer, Double> D_N_S_6 = Move_Average_Diff_Numeric(6,2, records);
+	  	HashMap<Integer, Double> D_N_R_6 = Move_Average_Diff_Numeric(6,3, records);
+	  	HashMap<Integer, Double> D_N_T_6 = Move_Average_Diff_Numeric(6,4, records);
+	  	
+	  	HashMap<Integer, Double> D_N_C_7 = Move_Average_Diff_Numeric(7,1, records);
+	  	HashMap<Integer, Double> D_N_S_7 = Move_Average_Diff_Numeric(7,2, records);
+	  	HashMap<Integer, Double> D_N_R_7 = Move_Average_Diff_Numeric(7,3, records);
+	  	HashMap<Integer, Double> D_N_T_7 = Move_Average_Diff_Numeric(7,4, records);
+	  	
+	  	HashMap<Integer, Double> D_N_C_8 = Move_Average_Diff_Numeric(8,1, records);
+	  	HashMap<Integer, Double> D_N_S_8 = Move_Average_Diff_Numeric(8,2, records);
+	  	HashMap<Integer, Double> D_N_R_8 = Move_Average_Diff_Numeric(8,3, records);
+	  	HashMap<Integer, Double> D_N_T_8 = Move_Average_Diff_Numeric(8,4, records);
+	  	
+	  	HashMap<Integer, Double> D_N_C_9 = Move_Average_Diff_Numeric(9,1, records);
+	  	HashMap<Integer, Double> D_N_S_9 = Move_Average_Diff_Numeric(9,2, records);
+	  	HashMap<Integer, Double> D_N_R_9 = Move_Average_Diff_Numeric(9,3, records);
+	  	HashMap<Integer, Double> D_N_T_9 = Move_Average_Diff_Numeric(9,4, records);
+	  	
+	  	HashMap<Integer, Double> D_N_C_10 = Move_Average_Diff_Numeric(10,1, records);
+	  	HashMap<Integer, Double> D_N_S_10 = Move_Average_Diff_Numeric(10,2, records);
+	  	HashMap<Integer, Double> D_N_R_10 = Move_Average_Diff_Numeric(10,3, records);
+	  	HashMap<Integer, Double> D_N_T_10 = Move_Average_Diff_Numeric(10,4, records);
+	  	
 		for (int i = 0; i < records.size(); i++) {		
 			ArrayList<String> temp = new ArrayList<>();
 			//Add time
@@ -806,6 +854,124 @@ public class GetAttr {
 					    	break;
 					    case "M_N_T_10":
 					        temp.add(String.valueOf(M_N_T_10.get(i)));
+					    	break; 
+					    	
+					  
+					    case "D_N_C_2":
+					        temp.add(String.valueOf(D_N_C_2.get(i)));
+					    	break;
+					    case "D_N_S_2":
+					        temp.add(String.valueOf(D_N_S_2.get(i)));
+					    	break;
+					    case "D_N_R_2":
+					        temp.add(String.valueOf(D_N_R_2.get(i)));
+					    	break;
+					    case "D_N_T_2":
+					        temp.add(String.valueOf(D_N_T_2.get(i)));
+					    	break; 
+					    	
+					    case "D_N_C_3":
+					        temp.add(String.valueOf(D_N_C_3.get(i)));
+					    	break;
+					    case "D_N_S_3":
+					        temp.add(String.valueOf(D_N_S_3.get(i)));
+					    	break;
+					    case "D_N_R_3":
+					        temp.add(String.valueOf(D_N_R_3.get(i)));
+					    	break;
+					    case "D_N_T_3":
+					        temp.add(String.valueOf(D_N_T_3.get(i)));
+					    	break; 
+					  
+					    case "D_N_C_4":
+					        temp.add(String.valueOf(D_N_C_4.get(i)));
+					    	break;
+					    case "D_N_S_4":
+					        temp.add(String.valueOf(D_N_S_4.get(i)));
+					    	break;
+					    case "D_N_R_4":
+					        temp.add(String.valueOf(D_N_R_4.get(i)));
+					    	break;
+					    case "D_N_T_4":
+					        temp.add(String.valueOf(D_N_T_4.get(i)));
+					    	break; 
+					    	
+					    case "D_N_C_5":
+					        temp.add(String.valueOf(D_N_C_5.get(i)));
+					    	break;
+					    case "D_N_S_5":
+					        temp.add(String.valueOf(D_N_S_5.get(i)));
+					    	break;
+					    case "D_N_R_5":
+					        temp.add(String.valueOf(D_N_R_5.get(i)));
+					    	break;
+					    case "D_N_T_5":
+					        temp.add(String.valueOf(D_N_T_5.get(i)));
+					    	break; 
+					
+					    case "D_N_C_6":
+					        temp.add(String.valueOf(D_N_C_6.get(i)));
+					    	break;
+					    case "D_N_S_6":
+					        temp.add(String.valueOf(D_N_S_6.get(i)));
+					    	break;
+					    case "D_N_R_6":
+					        temp.add(String.valueOf(D_N_R_6.get(i)));
+					    	break;
+					    case "D_N_T_6":
+					        temp.add(String.valueOf(D_N_T_6.get(i)));
+					    	break; 
+					    	 	
+					    case "D_N_C_7":
+					        temp.add(String.valueOf(D_N_C_7.get(i)));
+					    	break;
+					    case "D_N_S_7":
+					        temp.add(String.valueOf(D_N_S_7.get(i)));
+					    	break;
+					    case "D_N_R_7":
+					        temp.add(String.valueOf(D_N_R_7.get(i)));
+					    	break;
+					    case "D_N_T_7":
+					        temp.add(String.valueOf(D_N_T_7.get(i)));
+					    	break;  	
+				
+					    case "D_N_C_8":
+					        temp.add(String.valueOf(D_N_C_8.get(i)));
+					    	break;
+					    case "D_N_S_8":
+					        temp.add(String.valueOf(D_N_S_8.get(i)));
+					    	break;
+					    case "D_N_R_8":
+					        temp.add(String.valueOf(D_N_R_8.get(i)));
+					    	break;
+					    case "D_N_T_8":
+					        temp.add(String.valueOf(D_N_T_8.get(i)));
+					    	break; 
+					    	
+					    case "D_N_C_9":
+					        temp.add(String.valueOf(D_N_C_9.get(i)));
+					    	break;
+					    case "D_N_S_9":
+					        temp.add(String.valueOf(D_N_S_9.get(i)));
+					    	break;
+					    case "D_N_R_9":
+					        temp.add(String.valueOf(D_N_R_9.get(i)));
+					    	break;
+					    case "D_N_T_9":
+					        temp.add(String.valueOf(D_N_T_9.get(i)));
+					    	break; 
+					    	
+					    case "D_N_C_10":
+					        temp.add(String.valueOf(D_N_C_10.get(i)));
+					    	break;
+					    case "D_N_S_10":
+					        temp.add(String.valueOf(D_N_S_10.get(i)));
+					    	break;
+					    case "D_N_R_10":
+					        temp.add(String.valueOf(D_N_R_10.get(i)));
+					    	break;
+					    case "D_N_T_10":
+					        temp.add(String.valueOf(D_N_T_10.get(i)));
 					    	break; 
  					}
  					
