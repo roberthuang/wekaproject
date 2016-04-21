@@ -245,7 +245,7 @@ public class GetAttr {
     	}
     	
     	average /= (double) result.size();
-    	for (int i = 1; i < result.size(); i++) {
+    	for (int i = 1; i < records.size(); i++) {
     		if (result.get(i) == null) {
     			result.put(i, average);
     		}
@@ -280,7 +280,7 @@ public class GetAttr {
     	}
 //    	System.out.println(average);
     	average /= (double) result.size();
-    	for (int i = 1; i < result.size(); i++) {
+    	for (int i = 1; i < records.size(); i++) {
     		if (result.get(i) == null) {
     			result.put(i, average);
     		}
@@ -441,7 +441,7 @@ public class GetAttr {
     	}
     	
     	average /= (double) result.size();
-    	for (int i = 1; i < result.size(); i++) {
+    	for (int i = 1; i < records.size(); i++) {
     		if (result.get(i) == null) {
     			result.put(i, average);
     		}
@@ -449,11 +449,45 @@ public class GetAttr {
     	return result;
     }
     
-
+    public static HashMap<Integer, Double> origianl_relative(int att_index, ArrayList<ArrayList<String>> records) {
+    	HashMap<Integer, Double> result = new HashMap<>();
+    	double average = 0;
+    	for (int i = 1; i < records.size(); i++) {
+    	    //Empty
+    		if (i == 1)	{
+    	    	
+    	    } else {
+    	    	double pre = Double.parseDouble(records.get(i-1).get(att_index));
+    	    	double now = Double.parseDouble(records.get(i).get(att_index));
+    	    	
+    	    	double relative = (now - pre)/ (double) pre;
+    	    	result.put(i, relative);
+    	    	
+    	    	average += relative;
+    	    }
+    		
+    	}
+    	
+    	average /= result.keySet().size();
+    	for (int i = 1; i < records.size(); i++) {
+    	    if (result.get(i) == null) {
+    	    	result.put(i, average);
+    	    }    		
+    	}
+    	return result;
+    }
+    
     //weka
     public static void featureExtraction_weka(String output_filename, ArrayList<ArrayList<String>> records, HashMap<Integer, String> feature_target, int period, List<String> para_list) {		
     	
 		ArrayList<ArrayList<String>> result = new ArrayList<>();
+		
+		//Original Data Relative
+		HashMap<Integer, Double> R_C = origianl_relative(1, records);
+		HashMap<Integer, Double> R_S = origianl_relative(2, records);
+		HashMap<Integer, Double> R_R = origianl_relative(3, records);
+		HashMap<Integer, Double> R_T = origianl_relative(4, records);
+		
 		
 		//BIAS
 		HashMap<Integer, Double> B_N_C_2 = BIAS_Numeric(2,1, records);
@@ -600,10 +634,18 @@ public class GetAttr {
 			//Add time
 			temp.add(records.get(i).get(0));
 			if(i == 0) {
+			   //Original Data
                for (int j = 1; j < records.get(0).size(); j++) {
                    temp.add(records.get(i).get(j));
 			   }
-
+               
+               //Original Data Relative
+               temp.add("R_C");
+               temp.add("R_S");
+               temp.add("R_R");
+               temp.add("R_T");
+               
+               //MA and BIAS
                for (int k = 0; k < para_list.size();k++) {
             	   temp.add(para_list.get(i));   
                }
@@ -616,7 +658,14 @@ public class GetAttr {
 				temp.add(records.get(i).get(3));
 				temp.add(records.get(i).get(4));
 				
+				//Original Data Relative
+				temp.add(String.valueOf(R_C.get(i)));
+	            temp.add(String.valueOf(R_S.get(i)));
+	            temp.add(String.valueOf(R_R.get(i)));
+	            temp.add(String.valueOf(R_T.get(i)));
 				
+				
+				//MA and BIAS
 				for (int k = 0; k < para_list.size(); k++) {
  					switch(para_list.get(k)) {
  					    case "B_N_C_2":
