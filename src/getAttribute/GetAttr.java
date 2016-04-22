@@ -479,7 +479,7 @@ public class GetAttr {
     public static HashMap<Integer, Double> MA_relative(HashMap<Integer, Double> MA) {
     	HashMap<Integer, Double> result = new HashMap<>();
     	double average = 0;
-    	for (int i = 1; i < MA.size(); i++) {
+    	for (int i = 1; i <= MA.size(); i++) {
     	    //Empty
     		if (i == 1)	{
     	    	
@@ -495,7 +495,7 @@ public class GetAttr {
     	}
     	
     	average /= result.keySet().size();
-    	for (int i = 1; i < MA.size(); i++) {
+    	for (int i = 1; i <= MA.size(); i++) {
     	    if (result.get(i) == null) {
     	    	result.put(i, average);
     	    }    		
@@ -711,13 +711,13 @@ public class GetAttr {
                for (int j = 1; j < records.get(0).size(); j++) {
                    temp.add(records.get(i).get(j));
 			   }
-               /*
+               
                //Original Data Relative
                temp.add("R_C");
                temp.add("R_S");
                temp.add("R_R");
                temp.add("R_T");
-               */
+               
                //MA and BIAS
                for (int k = 0; k < para_list.size();k++) {
             	   temp.add(para_list.get(k));   
@@ -731,13 +731,13 @@ public class GetAttr {
 				temp.add(records.get(i).get(2));
 				temp.add(records.get(i).get(3));
 				temp.add(records.get(i).get(4));
-				/*
+				
 				//Original Data Relative
 				temp.add(String.valueOf(R_C.get(i)));
 	            temp.add(String.valueOf(R_S.get(i)));
 	            temp.add(String.valueOf(R_R.get(i)));
 	            temp.add(String.valueOf(R_T.get(i)));
-				*/
+				
 				
 				//MA and BIAS
 				for (int k = 0; k < para_list.size(); k++) {
