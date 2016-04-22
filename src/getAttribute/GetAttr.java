@@ -706,36 +706,38 @@ public class GetAttr {
 			//Add time
 			temp.add(records.get(i).get(0));
 			if(i == 0) {
+				
 			   //Original Data
                for (int j = 1; j < records.get(0).size(); j++) {
                    temp.add(records.get(i).get(j));
 			   }
-               
+               /*
                //Original Data Relative
                temp.add("R_C");
                temp.add("R_S");
                temp.add("R_R");
                temp.add("R_T");
-               
+               */
                //MA and BIAS
                for (int k = 0; k < para_list.size();k++) {
-            	   temp.add(para_list.get(i));   
+            	   temp.add(para_list.get(k));   
                }
                 
-                temp.add("Target");
+               temp.add("Target");
 			} else {
+				
 				//Original Data
 				temp.add(records.get(i).get(1));
 				temp.add(records.get(i).get(2));
 				temp.add(records.get(i).get(3));
 				temp.add(records.get(i).get(4));
-				
+				/*
 				//Original Data Relative
 				temp.add(String.valueOf(R_C.get(i)));
 	            temp.add(String.valueOf(R_S.get(i)));
 	            temp.add(String.valueOf(R_R.get(i)));
 	            temp.add(String.valueOf(R_T.get(i)));
-				
+				*/
 				
 				//MA and BIAS
 				for (int k = 0; k < para_list.size(); k++) {
