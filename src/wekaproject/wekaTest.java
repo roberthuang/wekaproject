@@ -99,7 +99,7 @@ public class wekaTest {
     		        predictions.appendElements(validation.predictions());
     		        		     
     		        double percentage  = validation.correct()/(double)(validation.incorrect() + validation.correct());
-		            if (percentage < 0.8) continue;
+		            if (percentage < 0.78) continue;
     		        
                 	File fout = new File("C:\\user\\workspace\\wekaproject\\data\\" + "svm_liner_"+ period + "_" + para_list +".arff");                	
              	    FileOutputStream fos = new FileOutputStream(fout);
@@ -129,7 +129,7 @@ public class wekaTest {
             	    FastVector predictions = new FastVector();
     		        predictions.appendElements(validation.predictions());
     		        double percentage  = validation.correct()/(double)(validation.incorrect() + validation.correct());
-		            if (percentage < 0.8) continue;
+		            if (percentage < 0.78) continue;
             		
                 	File fout = new File("C:\\user\\workspace\\wekaproject\\data\\" + "svm_poly_" + period + "_" + para_list +".arff");                	
              	    FileOutputStream fos = new FileOutputStream(fout);
@@ -154,7 +154,7 @@ public class wekaTest {
 		            Evaluation validation = classify(models[j], train, test); 
 		            predictions.appendElements(validation.predictions());
 		            double percentage  = validation.correct()/(double)(validation.incorrect() + validation.correct());
-		            if (percentage < 0.8) continue;
+		            if (percentage < 0.78) continue;
 		            
                     File fout = new File("C:\\user\\workspace\\wekaproject\\data\\" + models[j].getClass().getSimpleName() + "_" + period + "_" + para_list +".arff");                	
              	    FileOutputStream fos = new FileOutputStream(fout);
@@ -253,7 +253,14 @@ public class wekaTest {
 	}
 	 
 	public static void main(String[] args) throws Exception {		
-		
+		/**參數設定**/
+		//Level代表位階
+		int N = 5;
+		int Original_Level = 1;
+		int Original_Relative = 1;
+		int Original_Data = 1;
+		int MA_Relative = 1;
+
 		
 		int period = Integer.parseInt(args[0]); 
 		ArrayList<String> parameter = new ArrayList<>();
@@ -273,12 +280,12 @@ public class wekaTest {
 		parameter.add("D_N_R_" + period);
 		parameter.add("D_N_T_" + period);
 		
-		
-		parameter.add("M_R_C_" + period);
-		parameter.add("M_R_S_" + period);
-		parameter.add("M_R_R_" + period);
-		parameter.add("M_R_T_" + period);
-		
+		if (MA_Relative == 1) {
+		    parameter.add("M_R_C_" + period);
+		    parameter.add("M_R_S_" + period);
+		    parameter.add("M_R_R_" + period);
+		    parameter.add("M_R_T_" + period);
+		}
 		
 		buildPowerSet(parameter, parameter.size());
 		
@@ -294,13 +301,14 @@ public class wekaTest {
     	    /**Feature Extraction**/    	
     	    HashMap<Integer, String> feature_target = GetAttr.featureExtraction_target(records);
     	    
-    	    GetAttr.featureExtraction_weka("preprocessing\\weka_"  + period + "_" + para_list +".csv" , records, feature_target, period, para_list);  
+    	    GetAttr.featureExtraction_weka(Original_Relative, Original_Data, "preprocessing\\weka_"  + period + "_" + para_list +".csv" , records, feature_target, period, para_list);  
     	    //System.out.println(para_list);
     	    /**Translate To SDB**/
     	    /**1.Training Data**/
     	    
-    	    T2SDB t2sdb = new T2SDB();       	  
-    	    t2sdb.translate_training_sliding_window_weka_including_level(10, "preprocessing\\weka_"  + period + "_" + para_list +".csv", feature_target, "preprocessing\\weka_training_" + period + "_" + para_list +".txt",1, records);
+    	    T2SDB t2sdb = new T2SDB();   
+    	    
+    	    t2sdb.translate_training_sliding_window_weka_including_level(N, "preprocessing\\weka_"  + period + "_" + para_list +".csv", feature_target, "preprocessing\\weka_training_" + period + "_" + para_list +".txt", Original_Level, records);
     	    
     	    try {
                 ArrayList<ArrayList<String>> txt_training = read_text_weka("preprocessing\\weka_training_" + period + "_" + para_list +".txt");  

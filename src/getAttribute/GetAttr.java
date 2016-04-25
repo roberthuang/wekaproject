@@ -507,7 +507,7 @@ public class GetAttr {
     
     
     //weka
-    public static void featureExtraction_weka(String output_filename, ArrayList<ArrayList<String>> records, HashMap<Integer, String> feature_target, int period, List<String> para_list) {		
+    public static void featureExtraction_weka(int Original_Relative, int Original_Data,String output_filename, ArrayList<ArrayList<String>> records, HashMap<Integer, String> feature_target, int period, List<String> para_list) {		
     	
 		ArrayList<ArrayList<String>> result = new ArrayList<>();
 		
@@ -706,18 +706,20 @@ public class GetAttr {
 			//Add time
 			temp.add(records.get(i).get(0));
 			if(i == 0) {
-				
-			   //Original Data
-               for (int j = 1; j < records.get(0).size(); j++) {
-                   temp.add(records.get(i).get(j));
+			   if (Original_Data == 1) {
+			       //Original Data
+                   for (int j = 1; j < records.get(0).size(); j++) {
+                       temp.add(records.get(i).get(j));
+			       }
 			   }
-               
-               //Original Data Relative
-               temp.add("R_C");
-               temp.add("R_S");
-               temp.add("R_R");
-               temp.add("R_T");
-               
+			   if (Original_Relative == 1) {
+                   //Original Data Relative
+                   temp.add("R_C");
+                   temp.add("R_S");
+                   temp.add("R_R");
+                   temp.add("R_T");
+			   }
+			   
                //MA and BIAS
                for (int k = 0; k < para_list.size();k++) {
             	   temp.add(para_list.get(k));   
@@ -725,19 +727,20 @@ public class GetAttr {
                 
                temp.add("Target");
 			} else {
-				
-				//Original Data
-				temp.add(records.get(i).get(1));
-				temp.add(records.get(i).get(2));
-				temp.add(records.get(i).get(3));
-				temp.add(records.get(i).get(4));
-				
-				//Original Data Relative
-				temp.add(String.valueOf(R_C.get(i)));
-	            temp.add(String.valueOf(R_S.get(i)));
-	            temp.add(String.valueOf(R_R.get(i)));
-	            temp.add(String.valueOf(R_T.get(i)));
-				
+				if (Original_Data == 1) {
+				    //Original Data
+				    temp.add(records.get(i).get(1));
+				    temp.add(records.get(i).get(2));
+				    temp.add(records.get(i).get(3));
+				    temp.add(records.get(i).get(4));
+				}
+				if (Original_Relative == 1) {
+				    //Original Data Relative
+				    temp.add(String.valueOf(R_C.get(i)));
+	                temp.add(String.valueOf(R_S.get(i)));
+	                temp.add(String.valueOf(R_R.get(i)));
+	                temp.add(String.valueOf(R_T.get(i)));
+				}
 				
 				//MA and BIAS
 				for (int k = 0; k < para_list.size(); k++) {
