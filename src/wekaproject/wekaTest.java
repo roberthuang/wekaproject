@@ -253,14 +253,14 @@ public class wekaTest {
 	}
 	 
 	public static void main(String[] args) throws Exception {		
-		/**把计砞﹚**/
-		//Level顶
+		/**把计砞﹚**/		
 		int N = 5;
 		int Original_Level = 1;
-		int Original_Relative = 1;
-		int Original_Data = 1;
+		int Original_Relative = 0;
+		int Original_Data = 0;
 		int MA_Relative = 1;
-
+        int MA_Diff = 1;
+		
 		
 		int period = Integer.parseInt(args[0]); 
 		ArrayList<String> parameter = new ArrayList<>();
@@ -268,18 +268,17 @@ public class wekaTest {
 		parameter.add("B_N_S_" + period);
 		parameter.add("B_N_R_" + period);
 		parameter.add("B_N_T_" + period);
-		/*
-		parameter.add("M_N_C_" + period);
-		parameter.add("M_N_S_" + period);
-		parameter.add("M_N_R_" + period);
-		parameter.add("M_N_T_" + period);
-		*/
-		
-		parameter.add("D_N_C_" + period);
-		parameter.add("D_N_S_" + period);
-		parameter.add("D_N_R_" + period);
-		parameter.add("D_N_T_" + period);
-		
+		if (MA_Diff != 1) {
+		    parameter.add("M_N_C_" + period);
+		    parameter.add("M_N_S_" + period);
+		    parameter.add("M_N_R_" + period);
+		    parameter.add("M_N_T_" + period);
+		} else {		
+		    parameter.add("D_N_C_" + period);
+		    parameter.add("D_N_S_" + period);
+		    parameter.add("D_N_R_" + period);
+		    parameter.add("D_N_T_" + period);
+		}
 		if (MA_Relative == 1) {
 		    parameter.add("M_R_C_" + period);
 		    parameter.add("M_R_S_" + period);
