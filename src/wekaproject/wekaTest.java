@@ -55,9 +55,9 @@ public class wekaTest {
 		return 100 * correct / predictions.size();
 	}
  
-	public static void run(int period, List<String> para_list) throws Exception {
+	public static void run(int period, List<String> para_list, String preprocessing_path, String output_path) throws Exception {
 
-		BufferedReader datafile = readDataFile("/home/spark/robert/weka_server/preprocessing/weka_training_" + period + "_" + para_list +".arff");
+		BufferedReader datafile = readDataFile(preprocessing_path + "weka_training_" + period + "_" + para_list +".arff");
  
 		Instances data = new Instances(datafile);
 		//System.out.println(data.numAttributes() - 1);
@@ -97,7 +97,7 @@ public class wekaTest {
     		        double percentage  = validation.correct()/(double)(validation.incorrect() + validation.correct());
 		            if (percentage < 0.78) continue;
     		        
-                	File fout = new File("/home/spark/robert/weka_server/preprocessing/data/" + "svm_liner_"+ period + "_" + para_list +".arff");                	
+                	File fout = new File(output_path + "svm_liner_"+ period + "_" + para_list +".arff");                	
              	    FileOutputStream fos = new FileOutputStream(fout);
                     OutputStreamWriter osw = new OutputStreamWriter(fos);            	
             	    
@@ -127,7 +127,7 @@ public class wekaTest {
     		        double percentage  = validation.correct()/(double)(validation.incorrect() + validation.correct());
 		            if (percentage < 0.78) continue;
             		
-                	File fout = new File("/home/spark/robert/weka_server/preprocessing/data/" + "svm_poly_" + period + "_" + para_list +".arff");                	
+                	File fout = new File(output_path + "svm_poly_" + period + "_" + para_list +".arff");                	
              	    FileOutputStream fos = new FileOutputStream(fout);
                     OutputStreamWriter osw = new OutputStreamWriter(fos);   
                     
@@ -152,7 +152,7 @@ public class wekaTest {
 		            double percentage  = validation.correct()/(double)(validation.incorrect() + validation.correct());
 		            if (percentage < 0.78) continue;
 		            
-                    File fout = new File("/home/spark/robert/weka_server/preprocessing/data/" + models[j].getClass().getSimpleName() + "_" + period + "_" + para_list +".arff");                	
+                    File fout = new File(output_path + models[j].getClass().getSimpleName() + "_" + period + "_" + para_list +".arff");                	
              	    FileOutputStream fos = new FileOutputStream(fout);
                     OutputStreamWriter osw = new OutputStreamWriter(fos);   			        
  
@@ -250,15 +250,24 @@ public class wekaTest {
 	 
 	public static void main(String[] args) throws Exception {		
 		/**參數設定**/		
-		int N = 5;
+		int N = 10;
 		int Original_Level = 1;
 		int Original_Relative = 0;
 		int Original_Data = 0;
 		int MA_Relative = 1;
         int MA_Diff = 1;
 		
+        
+        if (args.length < 4) {
+		    System.out.println("Please input: (1) data_path  (2) preprocessing_path  (3) output_path  (4) periods"); 	
+		}
+        
+		String data_path = args[0];
+		String preprocessing_path = args[1];
+		String output_path = args[2];
+		int period = Integer.parseInt(args[3]); 
 		
-		int period = Integer.parseInt(args[0]); 
+		
 		ArrayList<String> parameter = new ArrayList<>();
 		parameter.add("B_N_C_" + period);
 		parameter.add("B_N_S_" + period);
@@ -290,25 +299,25 @@ public class wekaTest {
 		
 		for (List<String> para_list : powerSet) {		
 			if (para_list.isEmpty()) continue;
-			String path = "/home/spark/robert/weka_server/preprocessing/petro_subset1_2010_rate.csv";    	    
+			String path = data_path;    	    
     	    ArrayList<ArrayList<String>> records = readCSV(path);
     	    
     	    /**Feature Extraction**/    	
     	    HashMap<Integer, String> feature_target = GetAttr.featureExtraction_target(records);
     	    
-    	    GetAttr.featureExtraction_weka(Original_Relative, Original_Data, "/home/spark/robert/weka_server/preprocessing/weka_"  + period + "_" + para_list +".csv" , records, feature_target, period, para_list);  
+    	    GetAttr.featureExtraction_weka(Original_Relative, Original_Data, preprocessing_path + "weka_"  + period + "_" + para_list +".csv" , records, feature_target, period, para_list);  
     	    //System.out.println(para_list);
     	    /**Translate To SDB**/
     	    /**1.Training Data**/
     	    
     	    T2SDB t2sdb = new T2SDB();   
     	    
-    	    t2sdb.translate_training_sliding_window_weka_including_level(N, "/home/spark/robert/weka_server/preprocessing/weka_"  + period + "_" + para_list +".csv", feature_target, "/home/spark/robert/weka_server/preprocessing/weka_training_" + period + "_" + para_list +".txt", Original_Level, records);
+    	    t2sdb.translate_training_sliding_window_weka_including_level(N, preprocessing_path + "weka_"  + period + "_" + para_list +".csv", feature_target, preprocessing_path+"weka_training_" + period + "_" + para_list +".txt", Original_Level, records);
     	    
     	    try {
-                ArrayList<ArrayList<String>> txt_training = read_text_weka("/home/spark/robert/weka_server/preprocessing/weka_training_" + period + "_" + para_list +".txt");  
+                ArrayList<ArrayList<String>> txt_training = read_text_weka(preprocessing_path+"weka_training_" + period + "_" + para_list +".txt");  
                 try {
-    		        writeCSV("", "/home/spark/robert/weka_server/preprocessing/weka_training_" + period + "_" + para_list +".csv", txt_training);
+    		        writeCSV("", preprocessing_path + "weka_training_" + period + "_" + para_list +".csv", txt_training);
     		    } catch (IOException e) {
    			        System.out.println("[ERROR] I/O Exception.");
     			    e.printStackTrace();
@@ -320,15 +329,15 @@ public class wekaTest {
     	    
     	    // load CSV
     	    CSVLoader loader = new CSVLoader();
-    	    loader.setSource(new File("/home/spark/robert/weka_server/preprocessing/weka_training_" + period + "_" + para_list+".csv"));
+    	    loader.setSource(new File(preprocessing_path + "weka_training_" + period + "_" + para_list+".csv"));
     	    Instances data1 = loader.getDataSet();
     	    // save ARFF
     	    ArffSaver saver = new ArffSaver();
     	    saver.setInstances(data1);
-    	    saver.setFile(new File("/home/spark/robert/weka_server/preprocessing/weka_training_" + period + "_" + para_list +".arff"));
+    	    saver.setFile(new File(preprocessing_path + "weka_training_" + period + "_" + para_list +".arff"));
     	    //saver.setDestination(new File(args[1]));
     	    saver.writeBatch();    	    
-    	    run(period, para_list);
+    	    run(period, para_list, preprocessing_path, output_path);
             
 		}
 		//Clear
