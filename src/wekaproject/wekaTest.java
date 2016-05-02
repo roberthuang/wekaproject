@@ -95,7 +95,7 @@ public class wekaTest {
     		        predictions.appendElements(validation.predictions());
     		        		     
     		        double percentage  = validation.correct()/(double)(validation.incorrect() + validation.correct());
-		            if (percentage < 0.78) continue;
+		            if (percentage < 0.7) continue;
     		        
                 	File fout = new File(output_path + "svm_liner_"+ period + "_" + para_list +".arff");                	
              	    FileOutputStream fos = new FileOutputStream(fout);
@@ -125,7 +125,7 @@ public class wekaTest {
             	    FastVector predictions = new FastVector();
     		        predictions.appendElements(validation.predictions());
     		        double percentage  = validation.correct()/(double)(validation.incorrect() + validation.correct());
-		            if (percentage < 0.78) continue;
+		            if (percentage < 0.7) continue;
             		
                 	File fout = new File(output_path + "svm_poly_" + period + "_" + para_list +".arff");                	
              	    FileOutputStream fos = new FileOutputStream(fout);
@@ -150,7 +150,7 @@ public class wekaTest {
 		            Evaluation validation = classify(models[j], train, test); 
 		            predictions.appendElements(validation.predictions());
 		            double percentage  = validation.correct()/(double)(validation.incorrect() + validation.correct());
-		            if (percentage < 0.78) continue;
+		            if (percentage < 0.7) continue;
 		            
                     File fout = new File(output_path + models[j].getClass().getSimpleName() + "_" + period + "_" + para_list +".arff");                	
              	    FileOutputStream fos = new FileOutputStream(fout);
@@ -250,13 +250,13 @@ public class wekaTest {
 	 
 	public static void main(String[] args) throws Exception {		
 		/**參數設定**/		
-		int N = 10;
+		int N = 5;
 		int Original_Level = 1;
 		int Original_Relative = 1;
-		int Original_Data = 0;
+		int Original_Data = 1;
 		int MA_Relative = 1;
 		int MA_N = 0;
-        int MA_Diff = 0;
+        int MA_Diff = 1;
 		
         
         if (args.length < 4) {
@@ -315,7 +315,7 @@ public class wekaTest {
     	    
     	    T2SDB t2sdb = new T2SDB();   
     	    
-    	    t2sdb.translate_training_sliding_window_weka_including_level(N, preprocessing_path + "weka_"  + period + "_" + para_list +".csv", feature_target, preprocessing_path+"weka_training_" + period + "_" + para_list +".txt", Original_Level, records);
+    	    t2sdb.translate_training_sliding_window_weka_including_level(N, preprocessing_path + "weka_"  + period + "_" + para_list +".csv", feature_target, preprocessing_path+"weka_training_" + period + "_" + para_list +".txt", Original_Level, records, records.get(0).size()-1);
     	    
     	    try {
                 ArrayList<ArrayList<String>> txt_training = read_text_weka(preprocessing_path+"weka_training_" + period + "_" + para_list +".txt");  

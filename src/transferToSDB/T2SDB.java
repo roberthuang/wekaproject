@@ -217,7 +217,7 @@ public class T2SDB {
 	}
     
     //weka
-    public int translate_training_sliding_window_weka_including_level(int next_week, String path, HashMap<Integer, String> class_table, String output, int have_average ,ArrayList<ArrayList<String>> original_data) {
+    public int translate_training_sliding_window_weka_including_level(int next_week, String path, HashMap<Integer, String> class_table, String output, int have_average ,ArrayList<ArrayList<String>> original_data, int attribute_size) {
 	       int SDB_Training_Size = 0;
 	       try {
 	           ArrayList<ArrayList<String>> records = readCSV(path);	          
@@ -234,6 +234,9 @@ public class T2SDB {
 		        }   
 		        //原始資料的平均與中位數
 		        if (have_average == 1) {
+		        	
+		        	
+		        	/*
 		        	//平均值
 		        	osw.write("A" + t  + ", ");    	
 		        	t++;
@@ -252,6 +255,12 @@ public class T2SDB {
 		        	osw.write("A" + t  + ", "); 
 		        	t++;
 		        	osw.write("A" + t  + ", "); 
+		        	*/
+		        	
+		        	for (int i = 1; i <= attribute_size*2; i++) {
+		        		osw.write("A" + t  + ", ");
+		        		t++;
+		        	}
 		        }
 		        
 		        
