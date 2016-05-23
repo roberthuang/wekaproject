@@ -1262,6 +1262,36 @@ public class GetAttr {
     	return result;  
     	
     }
+    
+    public static HashMap<Integer, String> featureExtraction_target_user_defined(ArrayList<ArrayList<String>> records) {
+    	HashMap<Integer, String> result = new HashMap<>();
+    	
+    	int index_of_target_att = records.get(0).size()-1;
+    	for (int i = 1; i < records.size(); i++) {
+    	    if (i==1) {  
+    	    	result.put(i, "None_Rise");
+    	    	continue;
+    	    }
+    	    
+    	    double price_now = Double.parseDouble(records.get(i).get(index_of_target_att));
+    	    double price_pre = Double.parseDouble(records.get(i-1).get(index_of_target_att));
+    	    if (0 < (price_now-price_pre) && (price_now-price_pre) < 30) {
+    	    	result.put(i, "None_Rise");     
+    	    } else if (30 <= (price_now-price_pre) && (price_now-price_pre) <= 100) {
+    	    	result.put(i, "Rise");  
+    	    } else if ((price_now-price_pre) > 100) {
+    	    	result.put(i, "Most_Rise");  
+    	    } else if (-30 < (price_now-price_pre) && (price_now-price_pre) <=0) {
+    	    	result.put(i, "None_Down");  
+    	    } else if (-100 <= (price_now-price_pre) && (price_now-price_pre) <= -30) {
+    	    	result.put(i, "Down");
+    	    } else if ((price_now-price_pre) < -100) {
+    	    	result.put(i, "Most_Down");
+    	    }
+    	}    	  
+    	return result;  
+    	
+    }
            
     public static HashMap<Integer, String> MACD(int tl, int sl, int ll, String att, ArrayList<ArrayList<String>> records) {
     	HashMap<Integer, String> result = new HashMap<>(); 

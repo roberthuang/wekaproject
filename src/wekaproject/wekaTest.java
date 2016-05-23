@@ -95,7 +95,7 @@ public class wekaTest {
     		        predictions.appendElements(validation.predictions());
     		        		     
     		        double percentage  = validation.correct()/(double)(validation.incorrect() + validation.correct());
-		            if (percentage < 0.7) continue;
+		            if (percentage < 0.78) continue;
     		        
                 	File fout = new File(output_path + "svm_liner_"+ period + "_" + para_list +".arff");                	
              	    FileOutputStream fos = new FileOutputStream(fout);
@@ -125,7 +125,7 @@ public class wekaTest {
             	    FastVector predictions = new FastVector();
     		        predictions.appendElements(validation.predictions());
     		        double percentage  = validation.correct()/(double)(validation.incorrect() + validation.correct());
-		            if (percentage < 0.7) continue;
+		            if (percentage < 0.78) continue;
             		
                 	File fout = new File(output_path + "svm_poly_" + period + "_" + para_list +".arff");                	
              	    FileOutputStream fos = new FileOutputStream(fout);
@@ -150,7 +150,7 @@ public class wekaTest {
 		            Evaluation validation = classify(models[j], train, test); 
 		            predictions.appendElements(validation.predictions());
 		            double percentage  = validation.correct()/(double)(validation.incorrect() + validation.correct());
-		            if (percentage < 0.7) continue;
+		            if (percentage < 0.78) continue;
 		            
                     File fout = new File(output_path + models[j].getClass().getSimpleName() + "_" + period + "_" + para_list +".arff");                	
              	    FileOutputStream fos = new FileOutputStream(fout);
@@ -250,14 +250,14 @@ public class wekaTest {
 	 
 	public static void main(String[] args) throws Exception {		
 		/**參數設定**/		
-		int N = 5;
+		int N = 10;
 		int Original_Level = 1;
 		int Original_Relative = 1;
 		int Original_Data = 1;
 		int MA_Relative = 1;
 		int MA_N = 0;
         int MA_Diff = 1;
-		
+		int user_defined_class = 0;
         
         if (args.length < 4) {
 		    System.out.println("Please input: (1) data_path  (2) preprocessing_path  (3) output_path  (4) periods"); 	
@@ -297,6 +297,10 @@ public class wekaTest {
 		buildPowerSet(parameter, parameter.size());
 		
 		
+		/**Sequential Pattern Mining**/
+		//1.SAX
+		
+		
 		
 		
 		
@@ -306,7 +310,12 @@ public class wekaTest {
     	    ArrayList<ArrayList<String>> records = readCSV(path);
     	    
     	    /**Feature Extraction**/    	
-    	    HashMap<Integer, String> feature_target = GetAttr.featureExtraction_target(records);
+    	    HashMap<Integer, String> feature_target = new HashMap<>();
+    	    if (user_defined_class == 1) {
+    	    	feature_target = GetAttr.featureExtraction_target_user_defined(records);
+    	    } else {
+    	    	feature_target = GetAttr.featureExtraction_target(records);
+    	    }    	      	    
     	    
     	    GetAttr.featureExtraction_weka(Original_Relative, Original_Data, preprocessing_path + "weka_"  + period + "_" + para_list +".csv" , records, feature_target, period, para_list);  
     	    //System.out.println(para_list);
