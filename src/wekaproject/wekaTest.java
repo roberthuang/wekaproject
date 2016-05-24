@@ -261,7 +261,7 @@ public class wekaTest {
 		int Original_Data = 1;
 		int MA_Relative = 1;
 		int MA_N = 0;
-        int MA_Diff = 1;
+        int MA_Diff = 0;
 		int user_defined_class = 0;
         int minsup = 22;
         double minconf = 0.8;
@@ -272,6 +272,7 @@ public class wekaTest {
 		String data_path = args[0];
 		String preprocessing_path = args[1];
 		String output_path = args[2];
+		//選MA BIAS的週期
 		int period = Integer.parseInt(args[3]); 
 		
 		
@@ -300,7 +301,7 @@ public class wekaTest {
 		    parameter.add("M_R_T_" + period);
 		}
 		
-		//buildPowerSet(parameter, parameter.size());
+		buildPowerSet(parameter, parameter.size());
 		
 		/**擷取類別**/    
 		String path = data_path;    	    
@@ -315,19 +316,21 @@ public class wekaTest {
 		/**Sequential Pattern Mining**/
 		//離散化 SAX (Training Data)
 		SAXTransformation.start("SAXTransformation_config_petro_subset1_2010.txt");
-		  	    
+		
+		
+		
 	    //轉成sequence (Training Data)
 		String path_after_discrete_train = "petro_subset1_2010_rate_after_sax_training.csv";
 		T2SDB t = new T2SDB();
-		int SDB_Training_Size = t.translate_training_sliding_window(N, path_after_discrete_train,  feature_target, "SDB(Training).txt");
-		System.out.println("Train size " + SDB_Training_Size);
+		int  SDB_Training_Size = t.translate_training_sliding_window(N, path_after_discrete_train,  feature_target, "SDB(Training).txt");
+		//System.out.println("Train size " + SDB_Training_Size);
 		//離散化 SAX (Testing Data)		
 	    SAXTransformation_Testing.start("petro_subset1_breakpoints_2010.txt");
 	    
 	    //轉成sequence (Testing Data)
 	    String path_after_discrete_test = "petro_subset1_2010_rate_after_sax_testing.csv";
-	    int SDB_Testing_Size = t.translate_testing_sliding_window(N, path_after_discrete_test, "SDB(Testing).txt");	
-	    System.out.println("Test size " + SDB_Testing_Size);
+	    int  SDB_Testing_Size = t.translate_testing_sliding_window(N, path_after_discrete_test, "SDB(Testing).txt");	
+	    //System.out.println("Test size " + SDB_Testing_Size);
 	    //Sequential Pattern Mining
 	    SequenceDatabase sequenceDatabase = new SequenceDatabase();
 	    sequenceDatabase.loadFile("SDB(Training).txt");	    
@@ -342,13 +345,12 @@ public class wekaTest {
 	    //for (int index : SF.keySet()) {
 	    //	System.out.println(index);
 	    //}
-	    
-	    
-		int haha = 0;
-		if (haha == 1){
+	    int tt =1;
+	    if (tt == 1) {
+		
 		for (List<String> para_list : powerSet) {		
 			if (para_list.isEmpty()) continue;
-  
+			
     	    GetAttr.featureExtraction_weka(Original_Relative, Original_Data, preprocessing_path + "weka_"  + period + "_" + para_list +".csv" , records, feature_target, period, para_list);  
     	    //System.out.println(para_list);
     	    /**Translate To SDB**/
@@ -356,7 +358,7 @@ public class wekaTest {
     	    
     	    T2SDB t2sdb = new T2SDB();   
     	    
-    	    t2sdb.translate_training_sliding_window_weka_including_level(N, preprocessing_path + "weka_"  + period + "_" + para_list +".csv", feature_target, preprocessing_path+"weka_training_" + period + "_" + para_list +".txt", Original_Level, records, records.get(0).size()-1);
+    	    t2sdb.translate_training_sliding_window_weka_including_level_new(N, preprocessing_path + "weka_"  + period + "_" + para_list +".csv", feature_target, preprocessing_path+"weka_training_" + period + "_" + para_list +".txt", Original_Level, records, records.get(0).size()-1, SF);
     	    
     	    try {
                 ArrayList<ArrayList<String>> txt_training = read_text_weka(preprocessing_path+"weka_training_" + period + "_" + para_list +".txt");  
@@ -370,7 +372,7 @@ public class wekaTest {
                
             }
     	    
-    	    
+    	    /*
     	    // load CSV
     	    CSVLoader loader = new CSVLoader();
     	    loader.setSource(new File(preprocessing_path + "weka_training_" + period + "_" + para_list+".csv"));
@@ -381,10 +383,10 @@ public class wekaTest {
     	    saver.setFile(new File(preprocessing_path + "weka_training_" + period + "_" + para_list +".arff"));
     	    //saver.setDestination(new File(args[1]));
     	    saver.writeBatch();    	    
-    	    run(period, para_list, preprocessing_path, output_path);
+    	    run(period, para_list, preprocessing_path, output_path);*/
             
 		}
-	}
+	    }
 		//Clear
 		powerSet = new HashSet<List<String>>();
 		

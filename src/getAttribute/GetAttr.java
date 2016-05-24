@@ -61,6 +61,8 @@ public class GetAttr {
 	public static HashMap<Integer, ArrayList<Integer>> sequential_feture(HashMap<ArrayList<ArrayList<String>>, ArrayList<Double>> rules, HashMap<Integer, ArrayList<ArrayList<String>>> SDB_for_testing, HashMap<Integer, ArrayList<ArrayList<String>>> SDB_for_training) {
 		HashMap<Integer, ArrayList<Integer>> result = new HashMap<>();    	
 		int i = 0;		
+		System.out.println("SDB_for_training size: " + SDB_for_training.size());
+		System.out.println("SDB_for_testing size: " + SDB_for_testing.size());
 		for (i = 1; i <= SDB_for_training.size(); i++) {
 			ArrayList<Integer> match = new ArrayList<>();
 			//±ýÀË¬dªºsequence
@@ -128,6 +130,7 @@ public class GetAttr {
 		    }
 		    result.put(i+j, match);
 		}
+        System.out.println(result.size());
 		return result;
 	}
 	
