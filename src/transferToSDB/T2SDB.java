@@ -47,6 +47,52 @@ public class T2SDB {
 	       }        
 	       return SDB_Training_Size;
 	}
+	public int translate_testing_sliding_window(int next_week, String path, String output) {
+	    int SDB_Testing_Size = 0;
+	try {
+    	
+        ArrayList<ArrayList<String>> records = readCSV(path);                          
+        int training_data = (int)((records.size()-1)*0.8);       
+        
+        //output
+        File fout = new File(output);
+	        FileOutputStream fos = new FileOutputStream(fout);
+	        OutputStreamWriter osw = new OutputStreamWriter(fos);       
+//	        System.out.println(training_data + 1);
+        for (int i = training_data + 1; i < records.size()-next_week; i++) {
+//     	   System.out.println(i);
+            for (int j = 0; j < next_week;j++) {
+                int index = i + j; 
+                if (index < records.size()) {           
+             	   
+             	   for (int k = 1;k < records.get(i).size(); k++) {
+                 	   osw.write(records.get(index).get(k) + " ");    
+//                 	   osw.write("("+ index+ ")"+records.get(index).get(k) + " ");       
+                   }                       
+                    osw.write(-1 + " ");                       
+                    
+                } else {
+             	
+             	   break;
+                }
+            }                 
+            osw.write(""+-2);
+            osw.write("\r\n");    
+            SDB_Testing_Size++;
+        }
+        osw.close(); 
+        //System.out.println("Testing Data's window number: " + (records.size()- 1 - training_data) );
+        //System.out.println("===================================================\n");   
+    } catch (FileNotFoundException e) {
+	       System.out.println("[ERROR] File Not Found Exception.");
+	       e.printStackTrace();
+	   } catch (IOException e) {
+        System.out.println("[ERROR] I/O Exception.");
+        e.printStackTrace();
+    }  
+    return SDB_Testing_Size;
+} 
+	
 	public int translate_training_sliding_window(int next_week, String path, HashMap<Integer, String> class_table, String output) {
 	       int SDB_Training_Size = 0;
 	       try {

@@ -37,6 +37,102 @@ public class GetAttr {
 	     
 	    return result;		
 	}
+	
+	//得到Sequence
+	public static ArrayList<String> getsequence(ArrayList<String> sequence) {
+		ArrayList<String> result = new ArrayList<>();	
+		for (int i = 0; i < sequence.size(); i++) {
+			result.add(sequence.get(i));
+		}
+		return result;
+	}
+	
+	//得到Rule的前項
+	public static ArrayList<ArrayList<String>> get_prefix(ArrayList<ArrayList<String>> rule) {
+		ArrayList<ArrayList<String>> result = new ArrayList<>();	
+		for (int i = 0; i < rule.size()-1; i++) {
+			ArrayList<String> temp = new ArrayList<>();
+			temp = getsequence(rule.get(i));
+			result.add(temp);
+		}
+	    return result;
+	}
+	
+	public static HashMap<Integer, ArrayList<Integer>> sequential_feture(HashMap<ArrayList<ArrayList<String>>, ArrayList<Double>> rules, HashMap<Integer, ArrayList<ArrayList<String>>> SDB_for_testing, HashMap<Integer, ArrayList<ArrayList<String>>> SDB_for_training) {
+		HashMap<Integer, ArrayList<Integer>> result = new HashMap<>();    	
+		int i = 0;		
+		for (i = 1; i <= SDB_for_training.size(); i++) {
+			ArrayList<Integer> match = new ArrayList<>();
+			//欲檢查的sequence
+			ArrayList<ArrayList<String>> sequence = SDB_for_training.get(i);
+		    for (ArrayList<ArrayList<String>> rule : rules.keySet()) {
+		    	//得到Rule's prefix
+		    	ArrayList<ArrayList<String>> prefix_of_rule = get_prefix(rule);	
+		    	//System.out.println(rule);
+		    	//System.out.println(prefix_of_rule);
+		    	//看每個Sequence是否包含了Rule's prefix
+		    	int size = 0;
+                int current = 0;
+                for (int i_1 = 0; i_1 < sequence.size(); i_1++) {                	
+                    for (int j = current; j < prefix_of_rule.size(); j++) {                                         
+                        if (sequence.get(i_1).containsAll(prefix_of_rule.get(j))) {    
+                            current = j;
+                            current++;
+                            size++;
+                        }   
+                        break;
+                    }                                                            
+           
+                }        
+                //有包含Rule's prefix
+                if (size == prefix_of_rule.size()) {
+                    match.add(1);            	                      	
+                } else {
+                	match.add(0);
+                }
+		    }
+		    result.put(i, match);
+		}
+		i--;
+        for (int j = 1; j <= SDB_for_testing.size(); j++) {
+        	ArrayList<Integer> match = new ArrayList<>();
+			//欲檢查的sequence
+			ArrayList<ArrayList<String>> sequence = SDB_for_testing.get(j);
+		    for (ArrayList<ArrayList<String>> rule : rules.keySet()) {
+		    	//System.out.println("s:  " + sequence);
+		    	
+		    	//得到Rule's prefix
+		    	ArrayList<ArrayList<String>> prefix_of_rule = get_prefix(rule);
+		    	//System.out.println("r:  " + prefix_of_rule);
+		    	//看每個Sequence是否包含了Rule's prefix
+		    	int size = 0;
+                int current = 0;
+                for (int i_1 = 0; i_1 < sequence.size(); i_1++) {                	
+                    for (int j_1 = current; j_1 < prefix_of_rule.size(); j_1++) {                                         
+                        if (sequence.get(i_1).containsAll(prefix_of_rule.get(j_1))) {    
+                            current = j_1;
+                            current++;
+                            size++;
+                        }   
+                        break;
+                    }                                                            
+           
+                }        
+                //有包含Rule's prefix
+                if (size == prefix_of_rule.size()) {
+                	//System.out.println("Yes");
+                    match.add(1);            	                      	
+                } else {
+                	match.add(0);
+                }	
+		    }
+		    result.put(i+j, match);
+		}
+		return result;
+	}
+	
+	
+	
 	public static HashMap<Integer, String> feature(int att_index, ArrayList<ArrayList<String>> records) {
 		 HashMap<Integer, String> result = new HashMap<>(); 	    
 	     int col = att_index; 

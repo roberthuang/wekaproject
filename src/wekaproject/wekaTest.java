@@ -264,7 +264,7 @@ public class wekaTest {
         int MA_Diff = 1;
 		int user_defined_class = 0;
         int minsup = 22;
-        double minconf = 0.6;
+        double minconf = 0.8;
         if (args.length < 4) {
 		    System.out.println("Please input: (1) data_path  (2) preprocessing_path  (3) output_path  (4) periods"); 	
 		}
@@ -302,34 +302,47 @@ public class wekaTest {
 		
 		//buildPowerSet(parameter, parameter.size());
 		
-		
-		/**Sequential Pattern Mining**/
-		//1.1 SAX Training
-		SAXTransformation.start("SAXTransformation_config_petro_subset1_2010.txt");
+		/**擷取類別**/    
 		String path = data_path;    	    
 	    ArrayList<ArrayList<String>> records = readCSV(path);
-	    HashMap<Integer, String> feature_target = new HashMap<>();
-	    /**Feature Extraction**/    	
+	    HashMap<Integer, String> feature_target = new HashMap<>();	    
 	    if (user_defined_class == 1) {
 	    	feature_target = GetAttr.featureExtraction_target_user_defined(records);
 	    } else {
 	    	feature_target = GetAttr.featureExtraction_target(records);
-	    }    
-	    
-	    
-		String path_after_discrete = "petro_subset1_2010_rate_after_sax_training.csv";
+	    }  
+		
+		/**Sequential Pattern Mining**/
+		//離散化 SAX (Training Data)
+		SAXTransformation.start("SAXTransformation_config_petro_subset1_2010.txt");
+		  	    
+	    //轉成sequence (Training Data)
+		String path_after_discrete_train = "petro_subset1_2010_rate_after_sax_training.csv";
 		T2SDB t = new T2SDB();
-		int SDB_Training_Size = t.translate_training_sliding_window(N, path_after_discrete,  feature_target, "SDB(Training).txt");
-		//1.2 SAX Testing
+		int SDB_Training_Size = t.translate_training_sliding_window(N, path_after_discrete_train,  feature_target, "SDB(Training).txt");
+		System.out.println("Train size " + SDB_Training_Size);
+		//離散化 SAX (Testing Data)		
 	    SAXTransformation_Testing.start("petro_subset1_breakpoints_2010.txt");
-	
-	    SequenceDatabase sequenceDatabase = new SequenceDatabase();
-	    sequenceDatabase.loadFile("SDB(Training).txt");
 	    
+	    //轉成sequence (Testing Data)
+	    String path_after_discrete_test = "petro_subset1_2010_rate_after_sax_testing.csv";
+	    int SDB_Testing_Size = t.translate_testing_sliding_window(N, path_after_discrete_test, "SDB(Testing).txt");	
+	    System.out.println("Test size " + SDB_Testing_Size);
+	    //Sequential Pattern Mining
+	    SequenceDatabase sequenceDatabase = new SequenceDatabase();
+	    sequenceDatabase.loadFile("SDB(Training).txt");	    
 	    AlgoPrefixSpan_with_Strings algo = new AlgoPrefixSpan_with_Strings(); 
 	    algo.runAlgorithm(sequenceDatabase, "sequential_patterns.txt", minsup);   
-	    //Rule
+	    //產生Rule
 	    int rule_size = RuleEvaluation.start("RuleEvaluation_config.txt", minconf, minsup, N, SDB_Training_Size);
+	    
+	    /**產生Sequential Feature*/
+	    
+	    HashMap<Integer, ArrayList<Integer>> SF = GetAttr.sequential_feture(readRules("rules.txt"), ReadSDB_for_testing("SDB(Testing).txt"), Read_Training_Data("SDB(Training).txt"));
+	    //for (int index : SF.keySet()) {
+	    //	System.out.println(index);
+	    //}
+	    
 	    
 		int haha = 0;
 		if (haha == 1){
@@ -377,6 +390,126 @@ public class wekaTest {
 		
 	}
 	
+	private static void sequential_feture(HashMap<ArrayList<ArrayList<String>>, ArrayList<Double>> readRules,
+			HashMap<Integer, ArrayList<ArrayList<String>>> readSDB_for_testing,
+			HashMap<Integer, ArrayList<ArrayList<String>>> read_Training_Data) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	//讀取SDB(Training).txt
+	static HashMap<Integer, ArrayList<ArrayList<String>>> Read_Training_Data(String filename) throws FileNotFoundException{
+	    HashMap<Integer, ArrayList<ArrayList<String>>> result = new HashMap<>();
+	    int index = 1;        
+	    Scanner sc = new Scanner(new File(filename));        
+	    while(sc.hasNextLine()) {        
+	        ArrayList<ArrayList<String>> itemsets = new ArrayList<>();
+	        String[] tokens = sc.nextLine().split(" -1 -2");
+	        String[] tokens_next = tokens[0].split(" -1 ");
+	        for (String s : tokens_next) {
+	            ArrayList<String> itemset = new ArrayList<>();
+	            String[] tokens_next_next = s.split(" ");
+	            for (String ss : tokens_next_next) {
+	                itemset.add(ss);
+	            }
+	            itemsets.add(itemset);
+	        }
+	        result.put(index, itemsets);
+	        index = index + 1;
+	    }            
+	    /*
+	    //debug
+	    for (Integer i : result.keySet()) {
+		    System.out.println(i + " " + result.get(i));
+		    
+		}*/
+	    //System.out.println(result.size());
+	    sc.close();
+	    return result;
+	        
+	}
 	
+	
+	//讀取SDB(Testing).txt
+	static HashMap<Integer, ArrayList<ArrayList<String>>> ReadSDB_for_testing(String filename) throws FileNotFoundException{
+        HashMap<Integer, ArrayList<ArrayList<String>>> result = new HashMap<>();
+        int index = 1;        
+        Scanner sc = new Scanner(new File(filename));        
+        while(sc.hasNextLine()) {        
+            ArrayList<ArrayList<String>> itemsets = new ArrayList<>();
+         
+            String[] tokens = sc.nextLine().split(" -1 -2");
+            String[] tokens_next = tokens[0].split(" -1 ");
+            for (String s : tokens_next) {
+                ArrayList<String> itemset = new ArrayList<>();
+                String[] tokens_next_next = s.split(" ");
+                for (String ss : tokens_next_next) {
+                    itemset.add(ss);
+                }
+                itemsets.add(itemset);
+            }
+            result.put(index, itemsets);
+            index = index + 1;
+        }            
+        /*
+        //debug
+        for (Integer i : result.keySet()) {
+	        System.out.println(i + " " + result.get(i));
+	    
+	    }*/
+        //System.out.println(result.size());
+        sc.close();
+        return result;
+        
+    }
+	
+	//Read rule file
+    static HashMap<ArrayList<ArrayList<String>>, ArrayList<Double>> readRules(String filename) throws FileNotFoundException{
+	        
+		HashMap<ArrayList<ArrayList<String>>, ArrayList<Double>> result = new HashMap<>();
+				
+		Scanner sc = new Scanner(new File(filename));
+		while(sc.hasNextLine()){
+		
+		    ArrayList<ArrayList<String>> itemsets = new ArrayList<>();
+		    ArrayList<Double> list = new ArrayList<>();
+			String[] tokens = sc.nextLine().split("\t:\t");
+			//For sup, confidence
+			String[] number = tokens[1].split(",\t");
+			for (String s : number) {
+			    double n = Double.parseDouble(s);
+			    list.add(n);
+			}
+			
+			//For items
+			String[] tokens_next = tokens[0].split(" -> ");
+			String[] tokens_next_next = tokens_next[0].split(" -1 ");
+			
+			//tokens_next[1] : Rise/Down
+			ArrayList<String> itemset_next = new ArrayList<>();
+			itemset_next.add(tokens_next[1]);
+			
+			for(String s : tokens_next_next) {
+			    String[] tokens_next_next_next =  s.split(" ");
+			    ArrayList<String> itemset = new ArrayList<>();   
+			    for(String ss : tokens_next_next_next) {
+			        itemset.add(ss);    			    
+			    }
+			    itemsets.add(itemset);
+            }
+			itemsets.add(itemset_next);		
+			result.put(itemsets, list);
+			
+		}
+		/*
+		//debug
+		for (ArrayList<ArrayList<String>> key : result.keySet()) {
+		    System.out.println(key + " " + result.get(key));
+		
+		}*/
+		
+		sc.close();
+		return result;	
+    }	
 	
 }
